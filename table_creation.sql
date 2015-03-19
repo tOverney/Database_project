@@ -1,65 +1,80 @@
 CREATE TABLE Person
    (uid INTEGER NOT NULL,
-    first_name CHAR(75),
-    last_name CHAR(75),
+    first_name CHAR(75) NOT NULL,
+    last_name CHAR(75) NOT NULL,
     gender CHAR(1),
-    trivia VARCHAR,
-    quotes VARCHAR,
+    trivia TEXT,
+    quotes VARCHAR(4000),
     birth DATE,
     death DATE,
-    biography VARCHAR,
+    biography TEXT,
     spouse CHAR(100),
+    height DOUBLE PRECISION,
     primary key (uid));
 
 CREATE TABLE AlternativeName
-   (uid INTEGER,
-    pid INTEGER,
-    name CHAR(60),
+   (uid INTEGER NOT NULL,
+    pid INTEGER NOT NULL,
+    name CHAR(60) NOT NULL,
     primary key (uid)
     foreign key (pid) references Person(uid),
     ON DELETE CASCADE);
 
 CREATE TABLE Character
-   (uid INTEGER,
-    name CHAR(60),
+   (uid INTEGER NOT NULL,
+    name CHAR(60) NOT NULL,
     primary key (uid),
     );
+
+CREATE TYPE CAST_ROLE AS ENUM ('actor', 'actress', ...); // FILL THAT ENUM WITH CORRECT VALUES
 
 CREATE TABLE Cast
    (cid INTEGER,
     perid INTEGER NOT NULL,
     prodid INTEGER NOT NULL,
-    role CHAR(20) NOT NULL,
+    rid CAST_ROLE NOT NULL,
     primary key (cid, perid, prodid, role),
     foreign key (cid) references Character (uid),
     foreign key (perid) references Person (uid),
-    foreign key (prodid) references Production (uid));
+    foreign key (prodid) references Production (uid)
+    foreign key (rid) references Role (uid));
+
+CREATE TYPE PROD_KIND AS ENUM ('tv serie', 'movie', ...); // check enum values
 
 CREATE TABLE Production
    (uid INTEGER NOT NULL,
     title CHAR(80) NOT NULL,
+    production_year DATE,
+    sid INTEGER,
+    season SMALLINT,
+    episode SMALLINT,
+    series_years CHAR (11),
+    kind PROD_KIND NOT NULL,
+    ... // FILL ATTRIBUTES HERE TOO
     currency CHAR(3),
     budget INTEGER,
     primary key (uid));
 
+CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
+
 CREATE TABLE Participate
    (pid INTEGER NOT NULL,
     cid INTEGER NOT NULL,
-    type CHAR(20) NOT NULL,
+    type COMPANY_TYPE NOT NULL,
     primary key (pid, cid)
     foreign key (pid) references Production(uid),
-    foreign key (pid) references Company(uid));
+    foreign key (cid) references Company(uid));
 
 CREATE TABLE Company
    (uid INTEGER NOT NULL,
-    name CHAR(20) NOT NULL,
+    name CHAR(80) NOT NULL,
     country_code CHAR(6),
     primary key (uid));
 
 CREATE TABLE AlternativeTitle
    (uid INTEGER NOT NULL,
-    pid INTEGER,
-    title CHAR (30),
+    pid INTEGER NOT NULL,
+    title CHAR (80) NOT NULL,
     primary key (uid, pid)
     foreign key (pid) references Production (uid),
     ON DELETE CASCADE);
