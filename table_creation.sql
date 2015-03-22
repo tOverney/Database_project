@@ -26,7 +26,10 @@ CREATE TABLE Character
     primary key (uid),
     );
 
-CREATE TYPE CAST_ROLE AS ENUM ('actor', 'actress', ...); // FILL THAT ENUM WITH CORRECT VALUES
+CREATE TYPE CAST_ROLE AS
+    ENUM ('actor', 'actress', 'producer', 'writer', 'cinematographer',
+    'composer', 'costume designer', 'director', 'editor', 'miscellaneous crew',
+    'production designer');
 
 CREATE TABLE Cast
    (cid INTEGER,
@@ -39,7 +42,8 @@ CREATE TABLE Cast
     foreign key (prodid) references Production (uid)
     foreign key (rid) references Role (uid));
 
-CREATE TYPE PROD_KIND AS ENUM ('tv serie', 'movie', ...); // check enum values
+CREATE TYPE PROD_KIND AS
+    ENUM ('tv serie', 'movie', 'episode', 'movie', 'video movie', 'video game');
 
 CREATE TABLE Production
    (uid INTEGER NOT NULL,
@@ -50,9 +54,7 @@ CREATE TABLE Production
     episode SMALLINT,
     series_years CHAR (11),
     kind PROD_KIND NOT NULL,
-    ... // FILL ATTRIBUTES HERE TOO
-    currency CHAR(3),
-    budget INTEGER,
+    genre CHAR(20),
     primary key (uid));
 
 CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
