@@ -57,7 +57,8 @@ CREATE TABLE episode
     season SMALLINT NOT NULL,
     episode SMALLINT NOT NULL,
     primary key (uid),
-    foreign key (sid) references tv_serie (uid)) INHERITS (production);
+    foreign key (sid) references tv_serie (uid)
+    ON DELETE CASCADE) INHERITS (production);
 
 CREATE TABLE tv_movie
     (primary key (uid)) INHERITS (production);

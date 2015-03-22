@@ -91,7 +91,8 @@
         season SMALLINT NOT NULL,
         episode SMALLINT NOT NULL,
         primary key (uid),
-        foreign key (sid) references tv_serie (uid)) INHERITS (production);
+        foreign key (sid) references tv_serie (uid)
+        ON DELETE CASCADE) INHERITS (production);
     
     CREATE TABLE tv_movie
         (primary key (uid)) INHERITS (production);
@@ -130,7 +131,7 @@
         ON DELETE CASCADE);
     \end{lstlisting}
 
-
+\pagebreak
 \section{Discussion about constraint}
     A person can have one or more alternative name but an alternative name can describe only one person. We thus have a one-to-many relationship set. Also if the person is deleted from the database, his alternative names (if any) will be too. We thus created a weak entity for alternative name.
     Same thing for the production that can have one or more alternative title, we created a weak entity for alternative title. \\
