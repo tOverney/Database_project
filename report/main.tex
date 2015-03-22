@@ -3,9 +3,8 @@
 \usepackage[a4paper, total={6in, 9in}]{geometry}
 \usepackage[francais]{babel}
 \usepackage{natbib}
-\usepackage{graphicx}
+\usepackage{graphicx, caption, float}
 \usepackage{listings}
-\usepackage{pdfpages}
 
 \setlength{\parindent}{0pt}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -16,13 +15,17 @@
 \input{./title.tex}
 
 \section{ER model}
-\includepdf[pages={1}]{Diagrame_ER.pdf}
+    \begin{figure}[H]
+        \includegraphics[width=\linewidth]{Diagrame_ER.pdf}
+        \captionsetup{justification=centering}
+        \caption{ER model of our DBMS}
+    \end{figure}
 
 \section{Table creation}
-We will implement the next deliverables using our own server with PostGreSQL.
-As such the types used in the following CREATE TABLE possibly doesn't work well in an
-Oracle DB environnement.
-\begin{lstlisting}[
+    We will implement the next deliverables using our own server with PostGreSQL.
+    As such the types used in the following CREATE TABLE possibly doesn't work well in an
+    Oracle DB environnement.
+    \begin{lstlisting}[
            language=SQL,
            showspaces=false,
            basicstyle=\ttfamily,
@@ -30,89 +33,98 @@ Oracle DB environnement.
            numberstyle=\tiny,
            commentstyle=\color{gray}
         ]
-CREATE TABLE Person
-   (uid INTEGER NOT NULL,
-    first_name CHAR(75) NOT NULL,
-    last_name CHAR(75) NOT NULL,
-    gender CHAR(1),
-    trivia TEXT,
-    quotes VARCHAR(4000),
-    birth DATE,
-    death DATE,
-    biography TEXT,
-    spouse CHAR(100),
-    height DOUBLE PRECISION,
-    primary key (uid));
-
-CREATE TABLE AlternativeName
-   (uid INTEGER NOT NULL,
-    pid INTEGER NOT NULL,
-    name CHAR(60) NOT NULL,
-    primary key (uid)
-    foreign key (pid) references Person(uid),
-    ON DELETE CASCADE);
-
-CREATE TABLE Character
-   (uid INTEGER NOT NULL,
-    name CHAR(60) NOT NULL,
-    primary key (uid),
-    );
-
-CREATE TABLE Cast
-   (cid INTEGER,
-    perid INTEGER NOT NULL,
-    prodid INTEGER NOT NULL,
-    rid SMALLINT NOT NULL,
-    primary key (cid, perid, prodid, role),
-    foreign key (cid) references Character (uid),
-    foreign key (perid) references Person (uid),
-    foreign key (prodid) references Production (uid)
-    foreign key (rid) references Role (uid));
-
-CREATE TABLE Role
-   (uid SMALLINT NOT NULL,
-    title CHAR(20) NOT NULL,
-    primary key (uid));
-
-CREATE TABLE Production
-   (uid INTEGER NOT NULL,
-    title CHAR(80) NOT NULL,
-    currency CHAR(3),
-    budget INTEGER,
-    primary key (uid));
-
-CREATE TABLE Participate
-   (pid INTEGER NOT NULL,
-    cid INTEGER NOT NULL,
-    type CHAR(20) NOT NULL,
-    primary key (pid, cid)
-    foreign key (pid) references Production(uid),
-    foreign key (cid) references Company(uid));
-
-CREATE TABLE Company
-   (uid INTEGER NOT NULL,
-    name CHAR(20) NOT NULL,
-    country_code CHAR(6),
-    primary key (uid));
-
-CREATE TABLE AlternativeTitle
-   (uid INTEGER NOT NULL,
-    pid INTEGER,
-    title CHAR (30),
-    primary key (uid, pid)
-    foreign key (pid) references Production (uid),
-    ON DELETE CASCADE);
+    CREATE TABLE Person
+       (uid INTEGER NOT NULL,
+        first_name CHAR(75) NOT NULL,
+        last_name CHAR(75) NOT NULL,
+        gender CHAR(1),
+        trivia TEXT,
+        quotes VARCHAR(4000),
+        birth DATE,
+        death DATE,
+        biography TEXT,
+        spouse CHAR(100),
+        height DOUBLE PRECISION,
+        primary key (uid));
+    
+    CREATE TABLE AlternativeName
+       (uid INTEGER NOT NULL,
+        pid INTEGER NOT NULL,
+        name CHAR(60) NOT NULL,
+        primary key (uid)
+        foreign key (pid) references Person(uid),
+        ON DELETE CASCADE);
+    
+    CREATE TABLE Character
+       (uid INTEGER NOT NULL,
+        name CHAR(60) NOT NULL,
+        primary key (uid),
+        );
+    
+    CREATE TYPE CAST_ROLE AS
+        ENUM ('actor', 'actress', 'producer', 'writer', 'cinematographer',
+        'composer', 'costume designer', 'director', 'editor', 'miscellaneous crew',
+        'production designer');
+    
+    CREATE TABLE Cast
+       (cid INTEGER,
+        perid INTEGER NOT NULL,
+        prodid INTEGER NOT NULL,
+        rid CAST_ROLE NOT NULL,
+        primary key (cid, perid, prodid, role),
+        foreign key (cid) references Character (uid),
+        foreign key (perid) references Person (uid),
+        foreign key (prodid) references Production (uid)
+        foreign key (rid) references Role (uid));
+    
+    CREATE TYPE PROD_KIND AS
+        ENUM ('tv serie', 'movie', 'episode', 'movie', 'video movie', 'video game');
+    
+    CREATE TABLE Production
+       (uid INTEGER NOT NULL,
+        title CHAR(80) NOT NULL,
+        production_year DATE,
+        sid INTEGER,
+        season SMALLINT,
+        episode SMALLINT,
+        series_years CHAR (11),
+        kind PROD_KIND NOT NULL,
+        genre CHAR(20),
+        primary key (uid));
+    
+    CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
+    
+    CREATE TABLE Participate
+       (pid INTEGER NOT NULL,
+        cid INTEGER NOT NULL,
+        type COMPANY_TYPE NOT NULL,
+        primary key (pid, cid)
+        foreign key (pid) references Production(uid),
+        foreign key (cid) references Company(uid));
+    
+    CREATE TABLE Company
+       (uid INTEGER NOT NULL,
+        name CHAR(80) NOT NULL,
+        country_code CHAR(6),
+        primary key (uid));
+    
+    CREATE TABLE AlternativeTitle
+       (uid INTEGER NOT NULL,
+        pid INTEGER NOT NULL,
+        title CHAR (80) NOT NULL,
+        primary key (uid, pid)
+        foreign key (pid) references Production (uid),
+        ON DELETE CASCADE);
 \end{lstlisting}
 
 
 \section{Discussion about constraint}
-A person can have one or more alternative name but an alternative name can describe only one person. We thus have a one-to-many relationship set. Also if the person is deleted from the database, his alternative names (if any) will be too. We thus created a weak entity for alternative name. \\
-
-Same thing for the production that can have one or more alternative title, we created a weak entity for alternative title. \\
-
-A production cast make the connection between the production, the person and the character (if any). We thus made a ternary relationship between the three entity person, character and production. We add the role of the person as an attribute of the relationship set. A character exist only if related to at least one person and one production. The person and production entity don't have this constraint since a production can have only a director that won't have any character.  \\
-
-Companies can be involved into production. They can play roles of different type (for example production, distribution), thus we added an attribute to the relationship "participate" called type (since the data description was changed in that way before the deadline this justification isn't relevant any more). A production need to have at least one company involved.  \\
+    A person can have one or more alternative name but an alternative name can describe only one person. We thus have a one-to-many relationship set. Also if the person is deleted from the database, his alternative names (if any) will be too. We thus created a weak entity for alternative name.
+    Same thing for the production that can have one or more alternative title, we created a weak entity for alternative title. \\
+    
+    A production cast make the connection between the production, the person and the character (if any). We thus made a ternary relationship between the three entity person, character and production. We add the role of the person as an attribute of the relationship set. A character exist only if related to at least one person and one production. The person and production entity don't have this constraint since a production can have only a director that won't have any character.  \\
+    
+    Companies can be involved into production. They can play roles of different type (for example production, distribution), thus we added an attribute to the relationship "participate" called type instead of having a lot of duplicated entries in the "Company" table. Since that design choice, the data set given has been changed and comforted us in our design choice as the "type" attribute has been moved out of the COMPANY.csv file. A production need to have at least one company involved. 
  
 
 \end{document}
