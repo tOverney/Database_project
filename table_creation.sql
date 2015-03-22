@@ -34,7 +34,6 @@ CREATE TABLE production
    (uid INTEGER NOT NULL,
     title CHAR(80) NOT NULL,
     production_year DATE,
-    series_years CHAR (11),
     genre CHAR(20),
     primary key (uid));
 
@@ -50,7 +49,8 @@ CREATE TABLE casting
 
 
 CREATE TABLE tv_serie
-    (primary key (uid)) INHERITS (Production);
+   (series_years CHAR(11),
+    primary key (uid)) INHERITS (Production);
 
 CREATE TABLE episode
    (sid INTEGER NOT NULL,
