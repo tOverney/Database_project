@@ -42,20 +42,35 @@ CREATE TABLE Cast
     foreign key (prodid) references Production (uid)
     foreign key (rid) references Role (uid));
 
-CREATE TYPE PROD_KIND AS
-    ENUM ('tv serie', 'movie', 'episode', 'movie', 'video movie', 'video game');
-
 CREATE TABLE Production
    (uid INTEGER NOT NULL,
     title CHAR(80) NOT NULL,
     production_year DATE,
-    sid INTEGER,
-    season SMALLINT,
-    episode SMALLINT,
     series_years CHAR (11),
-    kind PROD_KIND NOT NULL,
     genre CHAR(20),
     primary key (uid));
+
+CREATE TABLE Episode
+   (sid INTEGER NOT NULL,
+    season SMALLINT NOT NULL,
+    episode SMALLINT NOT NULL,
+    foreign key (sid) references TvSerie (uid);
+    primary key (uid)) INHERITS (Production);
+
+CREATE TABLE TvSerie
+    (primary key (uid)) INHERITS (Production);
+
+CREATE TABLE TvMovie
+    (primary key (uid)) INHERITS (Production);
+
+CREATE TABLE Movie
+    (primary key (uid)) INHERITS (Production);
+
+CREATE TABLE VideoMovie
+    (primary key (uid)) INHERITS (Production);
+
+CREATE TABLE VideoGame
+    (primary key (uid)) INHERITS (Production);
 
 CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
 
