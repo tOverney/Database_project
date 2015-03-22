@@ -1,4 +1,4 @@
-CREATE TABLE Person
+﻿CREATE TABLE person
    (uid INTEGER NOT NULL,
     first_name CHAR(75) NOT NULL,
     last_name CHAR(75) NOT NULL,
@@ -12,37 +12,25 @@ CREATE TABLE Person
     height DOUBLE PRECISION,
     primary key (uid));
 
-CREATE TABLE AlternativeName
+CREATE TABLE alternative_name
    (uid INTEGER NOT NULL,
     pid INTEGER NOT NULL,
     name CHAR(60) NOT NULL,
-    primary key (uid)
-    foreign key (pid) references Person(uid),
+    primary key (uid),
+    foreign key (pid) references person(uid)
     ON DELETE CASCADE);
 
-CREATE TABLE Character
+CREATE TABLE character
    (uid INTEGER NOT NULL,
     name CHAR(60) NOT NULL,
-    primary key (uid),
-    );
+    primary key (uid));
 
 CREATE TYPE CAST_ROLE AS
     ENUM ('actor', 'actress', 'producer', 'writer', 'cinematographer',
     'composer', 'costume designer', 'director', 'editor', 'miscellaneous crew',
     'production designer');
 
-CREATE TABLE Cast
-   (cid INTEGER,
-    perid INTEGER NOT NULL,
-    prodid INTEGER NOT NULL,
-    rid CAST_ROLE NOT NULL,
-    primary key (cid, perid, prodid, role),
-    foreign key (cid) references Character (uid),
-    foreign key (perid) references Person (uid),
-    foreign key (prodid) references Production (uid)
-    foreign key (rid) references Role (uid));
-
-CREATE TABLE Production
+CREATE TABLE production
    (uid INTEGER NOT NULL,
     title CHAR(80) NOT NULL,
     production_year DATE,
@@ -50,48 +38,59 @@ CREATE TABLE Production
     genre CHAR(20),
     primary key (uid));
 
-CREATE TABLE Episode
+CREATE TABLE casting
+   (cid INTEGER,
+    perid INTEGER NOT NULL,
+    prodid INTEGER NOT NULL,
+    role CAST_ROLE NOT NULL,
+    primary key (cid, perid, prodid, role),
+    foreign key (cid) references character (uid),
+    foreign key (perid) references person (uid),
+    foreign key (prodid) references production (uid));
+
+
+CREATE TABLE tv_serie
+    (primary key (uid)) INHERITS (Production);
+
+CREATE TABLE episode
    (sid INTEGER NOT NULL,
     season SMALLINT NOT NULL,
     episode SMALLINT NOT NULL,
-    foreign key (sid) references TvSerie (uid);
-    primary key (uid)) INHERITS (Production);
+    primary key (uid),
+    foreign key (sid) references tv_serie (uid)) INHERITS (production);
 
-CREATE TABLE TvSerie
-    (primary key (uid)) INHERITS (Production);
+CREATE TABLE tv_movie
+    (primary key (uid)) INHERITS (production);
 
-CREATE TABLE TvMovie
-    (primary key (uid)) INHERITS (Production);
+CREATE TABLE movie
+    (primary key (uid)) INHERITS (production);
 
-CREATE TABLE Movie
-    (primary key (uid)) INHERITS (Production);
+CREATE TABLE video_movie
+    (primary key (uid)) INHERITS (production);
 
-CREATE TABLE VideoMovie
-    (primary key (uid)) INHERITS (Production);
-
-CREATE TABLE VideoGame
-    (primary key (uid)) INHERITS (Production);
+CREATE TABLE video_game
+    (primary key (uid)) INHERITS (production);
 
 CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
 
-CREATE TABLE Participate
-   (pid INTEGER NOT NULL,
-    cid INTEGER NOT NULL,
-    type COMPANY_TYPE NOT NULL,
-    primary key (pid, cid)
-    foreign key (pid) references Production(uid),
-    foreign key (cid) references Company(uid));
-
-CREATE TABLE Company
+CREATE TABLE company
    (uid INTEGER NOT NULL,
     name CHAR(80) NOT NULL,
     country_code CHAR(6),
     primary key (uid));
 
-CREATE TABLE AlternativeTitle
+CREATE TABLE participate
+   (pid INTEGER NOT NULL,
+    cid INTEGER NOT NULL,
+    type COMPANY_TYPE NOT NULL,
+    primary key (pid, cid),
+    foreign key (pid) references production(uid),
+    foreign key (cid) references company(uid));
+
+CREATE TABLE alternative_title
    (uid INTEGER NOT NULL,
     pid INTEGER NOT NULL,
     title CHAR (80) NOT NULL,
-    primary key (uid, pid)
-    foreign key (pid) references Production (uid),
+    primary key (uid),
+    foreign key (pid) references production (uid)
     ON DELETE CASCADE);
