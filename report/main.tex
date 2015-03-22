@@ -5,6 +5,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{pdfpages}
 
 \setlength{\parindent}{0pt}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -15,6 +16,8 @@
 \input{./title.tex}
 
 \section{ER model}
+\includepdf[pages={1}]{Diagrame_ER.pdf}
+
 \section{Table creation}
 We will implement the next deliverables using our own server with PostGreSQL.
 As such the types used in the following CREATE TABLE possibly doesn't work well in an
@@ -107,10 +110,9 @@ A person can have one or more alternative name but an alternative name can descr
 
 Same thing for the production that can have one or more alternative title, we created a weak entity for alternative title. \\
 
-A production cast make the connection between the production, the person and his role and the character (if any). We thus made a ternary relationship between the three entity person, character and production. A production cast does not necessarily need to have a character (for example if the person was the writer of the production). We made an entity for the role in order to minimize the size in byte of each table entry. \\
+A production cast make the connection between the production, the person and the character (if any). We thus made a ternary relationship between the three entity person, character and production. We add the role of the person as an attribute of the relationship set. A character exist only if related to at least one person and one production. The person and production entity don't have this constraint since a production can have only a director that won't have any character.  \\
 
-Companies can be involved into production. They can play roles of different type (for example production, distribution), thus we added an attribute to the relationship "participate" called type. A production need to have at least one company involved. \\
+Companies can be involved into production. They can play roles of different type (for example production, distribution), thus we added an attribute to the relationship "participate" called type (since the data description was changed in that way before the deadline this justification isn't relevant any more). A production need to have at least one company involved.  \\
  
-
 
 \end{document}
