@@ -4,7 +4,7 @@
 \usepackage[francais]{babel}
 \usepackage{natbib}
 \usepackage{graphicx, caption, float}
-\usepackage{listings}
+\usepackage{listings, lstautogobble}
 
 \setlength{\parindent}{0pt}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -29,8 +29,7 @@
            language=SQL,
            showspaces=false,
            basicstyle=\ttfamily,
-           numbers=left,
-           numberstyle=\tiny,
+           autogobble=true,
            commentstyle=\color{gray}
         ]
     CREATE TABLE Person
