@@ -38,11 +38,12 @@ CREATE TABLE production
     primary key (uid));
 
 CREATE TABLE casting
-   (cid INTEGER,
+   (uid SERIAL,
+    cid INTEGER,
     perid INTEGER NOT NULL,
     prodid INTEGER NOT NULL,
     role CAST_ROLE NOT NULL,
-    primary key (cid, perid, prodid, role),
+    primary key (uid),
     foreign key (cid) references character (uid),
     foreign key (perid) references person (uid),
     foreign key (prodid) references production (uid));
