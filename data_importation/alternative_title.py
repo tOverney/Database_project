@@ -1,25 +1,42 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from sys import argv
 
+import psycopg2
+
 FILE_PATH = "../Movies/ALTERNATIVE_TITLE.CSV"
+
 username = "";
 password = "";
 query_parameters = []
  
 def fill_array():
     data = open(FILE_PATH, "r")
-    query_line = []
-    i = 0
 
     for line in data:
-        (uid, production_id, title) = line.rstrip("\n").split("\t")
-        query_line.append((int(uid), int(production_id), title))
-        i += 1
+        query_line = line.rstrip("\n").split("\t")
+        query_parameters.append(query_line)
 
-    print "\nfound %s %s entries" % (len(query_line), i)
 
 def execute_sql():
-    print "here psycopg enters into plays and we execute many! yay!"
+    try:
+        conn = psycopg2.connect(
+            "dbname='postgres' user=%s host='91.121.194.141' password=%s"
+            % (username, password))
+    except psycopg2.Error as e:
+        print e.pgerror
+        quit()
+
+    cur = conn.cursor()
+    print query_parameters[0]
+    try:
+        cur.executemany("""INSERT INTO alternative_title(uid, pid, title) VALUES (%s, %s, %s)""", query_parameters)
+    except psycopg2.Error as e:
+        print e.pgerror
+        quit()
+
+    print "Import successful! Back to you human!"
+    cur.close()
+    conn.close()
 
 if __name__ == "__main__":
     if len(argv) < 3:
