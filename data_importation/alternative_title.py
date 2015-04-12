@@ -27,7 +27,6 @@ def execute_sql():
         quit()
 
     cur = conn.cursor()
-    print query_parameters[0]
     try:
         cur.executemany("""INSERT INTO alternative_title(uid, pid, title) VALUES (%s, %s, %s)""", query_parameters)
     except psycopg2.Error as e:
@@ -39,9 +38,6 @@ def execute_sql():
     conn.close()
 
 if __name__ == "__main__":
-    if len(argv) < 3:
-        print "db login infos must be passed as argument (username password)"
-        quit()
 
     username = argv[1]
     password = argv[2]
