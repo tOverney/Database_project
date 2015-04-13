@@ -22,7 +22,7 @@ CREATE TABLE alternative_name
 
 CREATE TABLE character
    (uid INTEGER NOT NULL,
-    name CHAR(60) NOT NULL,
+    name TEXT NOT NULL,
     primary key (uid));
 
 CREATE TYPE CAST_ROLE AS
