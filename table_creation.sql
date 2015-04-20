@@ -1,15 +1,16 @@
 ﻿CREATE TABLE person
    (uid INTEGER NOT NULL,
-    first_name CHAR(75) NOT NULL,
-    last_name CHAR(75) NOT NULL,
+    first_name TEXT,
+    last_name TEXT NOT NULL,
     gender CHAR(1),
     trivia TEXT,
-    quotes VARCHAR(4000),
+    quotes TEXT,
     birth DATE,
     death DATE,
     biography TEXT,
-    spouse CHAR(100),
+    spouse TEXT,
     height DOUBLE PRECISION,
+    birth_name TEXT,
     primary key (uid));
 
 CREATE TABLE alternative_name
@@ -77,8 +78,8 @@ CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production company');
 
 CREATE TABLE company
    (uid INTEGER NOT NULL,
-    name CHAR(80) NOT NULL,
     country_code CHAR(6),
+    name TEXT NOT NULL,
     primary key (uid));
 
 CREATE TABLE participate

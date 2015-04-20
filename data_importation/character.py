@@ -3,6 +3,7 @@ from sys import argv
 
 import psycopg2
 
+# hard coded, yes it's bad but I'm lazy
 FILE_PATH = "../Movies/CHARACTER.CSV"
 
 username = ""
