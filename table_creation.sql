@@ -34,7 +34,7 @@ CREATE TYPE CAST_ROLE AS
 CREATE TABLE production
    (uid INTEGER NOT NULL,
     title CHAR(80) NOT NULL,
-    production_year DATE,
+    production_year INT,
     genre CHAR(20),
     primary key (uid));
 
@@ -50,14 +50,14 @@ CREATE TABLE casting
     foreign key (prodid) references production (uid));
 
 
-CREATE TABLE tv_serie
+CREATE TABLE tv_series
    (series_years CHAR(11),
     primary key (uid)) INHERITS (Production);
 
 CREATE TABLE episode
    (sid INTEGER NOT NULL,
-    season SMALLINT NOT NULL,
-    episode SMALLINT NOT NULL,
+    season SMALLINT,
+    episode INTEGER,
     primary key (uid),
     foreign key (sid) references tv_serie (uid)
     ON DELETE CASCADE) INHERITS (production);
