@@ -9,7 +9,7 @@ import StringIO
 import psycopg2
 
 # hard coded, yes it's bad but I'm lazy
-FILE_PATH = "../Movies/PRODUCTION_CAST.CSV"
+FILE_PATH = "../Movies/ALTERNATIVE_NAME.CSV"
 TEMP_FILE = ".temp.csv"
 
 username = ""
@@ -30,8 +30,8 @@ def execute_sql():
     formatted_csv = open(FILE_PATH, "r")
     # mass copy of the CSV to the desired table
     try:
-        cur.copy_from(formatted_csv, 'casting', sep='\t',
-            columns=('prodid', 'perid', 'cid', 'role'))
+        cur.copy_from(formatted_csv, 'alternative_name', sep='\t',
+            columns=('uid', 'pid', 'name'))
         conn.commit()
     except psycopg2.Error as e:
         print e.pgerror
