@@ -1,19 +1,18 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from sys import argv
 
-import os
-import sh
-import StringIO
 import psycopg2
 
 # hard coded, yes it's bad but I'm lazy
-FILE_PATH = "../Movies/ALTERNATIVE_TITLE.CSV"
-TEMP_FILE = ".temp.csv"
+FILE_PATH = "../Movies/COMPANY.CSV"
 
 username = ""
 password = ""
+
+# we actually don't need to format that csv,
+# it's already in the correct format (uid, name)
+data = open(FILE_PATH, "r")
+
 
 def execute_sql():
 
@@ -27,20 +26,16 @@ def execute_sql():
         quit()
     cur = conn.cursor()
 
-    formatted_csv = open(FILE_PATH, "r")
     # mass copy of the CSV to the desired table
     try:
-        cur.copy_from(formatted_csv, 'alternative_title', sep='\t',
-            columns=('uid', 'pid', 'title'))
+        cur.copy_from(data, 'company', columns=('uid', 'country_code', 'name'))
         conn.commit()
     except psycopg2.Error as e:
         print e.pgerror
         quit()
 
     # closing connection correctly
-    print "[-] Import successful! Back to you human!"
-
-    formatted_csv.close()
+    print "Import successful! Back to you human!"
     cur.close()
     conn.close()
 
@@ -52,3 +47,5 @@ if __name__ == "__main__":
     password = argv[2]
 
     execute_sql()
+    
+    data.close()

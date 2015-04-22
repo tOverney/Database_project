@@ -12,15 +12,15 @@ def read_file(data_file, column):
     for line in data:
         line_elem = line.rstrip("\n").split("\t")
         elem = line_elem[int(column)]
-        if mode == 1:
+        if mode == 1 :
             if elem not in result :
-                print "%s" % elem
+                print elem
             result.append(elem)
-
-        temp = max(len(elem), longest)
-        if temp != longest:
-            print temp
-            longest = temp
+        else :
+            temp = max(len(elem), longest)
+            if temp != longest:
+                print temp
+                longest = temp
 
     if mode == 1:
         print "\nfound %s different values in the column" %len(result)
