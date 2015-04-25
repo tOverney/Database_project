@@ -37,5 +37,4 @@ def index(request):
     context = RequestContext(request, {
             'queries' : required_queries,})
 
-    return HttpResponse("Hello, world. This is live from a python" +
-        " script through django, throught uwsgi")
+    return HttpResponse(template.render(context))
