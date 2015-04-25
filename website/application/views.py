@@ -41,8 +41,7 @@ required_queries = [
     FROM casting
     WHERE role = 'actor'
     GROUP BY prodid) AS number;""",
-    ("Average # actors", "Max # actors", "Min # actors")))
-]
+    ("Average # actors", "Max # actors", "Min # actors"))]
 
 def index(request) :
 
