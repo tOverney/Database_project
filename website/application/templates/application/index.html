@@ -1,7 +1,7 @@
 <h1>Select one of the preset queries</h1>
 {% if queries %}
     <ul>
-    {% for query_name in queries.viewkeys() %}
+    {% for query_name in queries %}
         <li><a href="/{{ queries[query_name][0] }}/">{{ queries[query_name][1] }}</a></li>
     {% endfor %}
     </ul>
