@@ -284,6 +284,13 @@ G) List the three most popular character names
     \end{lstlisting}
 \medskip
 
-\subsection{Interface}
+\subsection{Grapical User Interface Design}
+
+For the method to apply on a graphical user interface (GUI) allowing to query our movie database, we choose an opensource internet framework written in python, Django \footnote{Django Software Fondation, https://www.djangoproject.com}. The graphical design was focused on giving an open space to the user rather than a high-density function in a unique window.\\
+
+Based on that, we design a main window with only the general search, meaning a text entry, a validation button and three radioboxes to specified what kind of search the user intend to do : by person, by movie or by casting. Once the user made a search, the results are display in a form of a list summarizing the informations retrieved from the database. The result window keeps the three general search components in case the user would want to adapt his search. We also add the possibility to recieve further informations on a part of the result by cliquing on it, this will in fact run a search query base on the type of the object of the user interest.\\
+
+Then, to display the deliverable queries and their results, we used a menu list (comparable to an onglet system) to switch from the general search (default window) to the list of the deliverable queries (at the end 21 queries). Also here cliquing on one component of this list will trigger the associated SQL query and display the results in a new window to easily adapt the layout of the results. Indeed, the kind of results may diverge greatly from a unique row to several hundreds of them.
+
 
 \end{document}
