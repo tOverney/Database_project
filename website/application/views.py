@@ -34,4 +34,4 @@ def index(request):
 
     context = {'queries' : required_queries}
 
-    return render(request, 'index.html', context)
+    return render(request, 'application/index.html', context)
