@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import RequestContext, loader
 
 import psycopg2
 
@@ -33,8 +31,7 @@ required_queries = {
 }
 
 def index(request):
-    template = loader.get_template('index.html')
-    context = RequestContext(request, {
-            'queries' : required_queries,})
 
-    return HttpResponse(template.render(context))
+    context = {'queries' : required_queries}
+
+    return render(request, 'index.html', context)
