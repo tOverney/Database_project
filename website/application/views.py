@@ -46,7 +46,7 @@ required_queries = [
 
 def index(request) :
 
-    context = {'queries' : required_queries}
+    context = {'queries' : required_queries, 'range' : range(len(queries))}
 
     return render(request, 'application/index.html', context)
 
