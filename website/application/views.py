@@ -80,7 +80,7 @@ def result(request, query_index) :
     conn.close()
 
     context = {'query_name' : current[0],
-        'query_result' : result_array
+        'query_result' : result_array,
         'col_title' : current[2]}
     
     return render(request, 'application/result.html', context)
