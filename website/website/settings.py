@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'webSelector',
+        'PASSWORD': 'thisisnotasecurepassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -87,7 +91,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'GTM+2'
 
 USE_I18N = True
 
