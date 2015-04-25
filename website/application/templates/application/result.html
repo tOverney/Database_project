@@ -1,0 +1,16 @@
+<h1>Result of the query: "{{ query_name }}"</h1>
+<br/>
+<table>
+    <tr>
+        {% for name in col_title %}
+            <th>{{ name }}</th>
+        {% endfor %}
+    </tr>    
+    {% for line in query_result %}
+    <tr>
+        {% for elem in line %}
+            <td>{{ elem }}</td>
+        {% endfor %}
+    </tr> 
+    {% endfor %}
+</table>

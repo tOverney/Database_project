@@ -1,8 +1,8 @@
 <h1>Select one of the preset queries</h1>
 {% if queries %}
     <ul>
-    {% for query_name, query_value in queries.items %}
-        <li><a href="{% url 'result' query_value.0 %}/">{{ query_name }}</a></li>
+    {% for i in range(len(queries)) %}
+        <li><a href="{% url 'result' i %}/">{{ queries.i.0 }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
