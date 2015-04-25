@@ -56,6 +56,17 @@ SELECT per.first_name, per.last_name, p.title
     AND c.perid < 2000
 
 
+-- My version
+SELECT p2.uid, p1.uid, person.first_name, person.last_name, prod.title, p1.role, p2.role FROM casting p1
+    LEFT JOIN casting p2
+        ON p1.prodid = p2.prodid AND p1.perid = p2.perid
+    LEFT JOIN person
+        ON p1.perid = person.uid
+    LEFT JOIN production prod
+        ON p1.prodid = prod.uid
+    WHERE p1.role='director' AND p2.role='actor';
+
+
 -- List the three most popular character names
 SELECT name, COUNT(*) AS amount
     FROM character
