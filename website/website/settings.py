@@ -25,24 +25,13 @@ SECRET_KEY = 'kib++66s0qt1r&9se5c0s$5%s*tatcleumtj_v-p1&*r+k89uh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['database.overney.me',]
+ALLOWED_HOSTS = ['database.overney.me']
 
 
 # Application definition
 
 INSTALLED_APPS = (
     'application',
-)
-
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'website.urls'
