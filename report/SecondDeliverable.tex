@@ -150,9 +150,122 @@
 \section{Second deliverable}
 
 \subsection{First deliverable changes}
+    Since deliverable one we had to do several change on the table creation queries.
+    First of all, the casting table now has its own index as it is indeed not correct to have a nullable element in a primary key! (its type is serial and its value is set automatically!
+    Second of all, the PostGreSQL inheritance dream turned sour when we found out that this functionnality works perfectly by itself, as we described it. But you can't have a foreign key pointing to that parent table to reference everything including child table.
+    As such, we were forced to get rid of the inheritance, as we need a foreign key for productions, both in $alternative\_title$ and $casting$!
+    Also, we got rid of most $CHAR(some\_int)$ for $TEXT$ because there is often one or two values that are much longer that the others and if you use a $CHAR()$ you'd have to allocate bytes to fit the longest entry for each line even the shorter. With $TEXT$ the allocation is more clever and the number of bytes for a field is variable between lines. This change reduced greatly the size of our database tables. 
+    Eventually, we added the field "birth name" to the person table which we forgot to add for the first deliverable. 
+    Here are the new table creation instructions as a recap.
+    \begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\ttfamily,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+CREATE TABLE person
+   (uid INTEGER NOT NULL,
+    first_name TEXT,
+    last_name TEXT NOT NULL,
+    gender CHAR(1),
+    trivia TEXT,
+    quotes TEXT,
+    birth DATE,
+    death DATE,
+    biography TEXT,
+    spouse TEXT,
+    height DOUBLE PRECISION,
+    birth_name TEXT,
+    primary key (uid));
+
+CREATE TABLE alternative_name
+   (uid INTEGER NOT NULL,
+    pid INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    primary key (uid),
+    foreign key (pid) references person(uid)
+    ON DELETE CASCADE);
+
+CREATE TABLE character
+   (uid INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    primary key (uid));
+
+CREATE TYPE CAST_ROLE AS
+    ENUM ('actor', 'actress', 'producer', 'writer', 'cinematographer',
+    'composer', 'costume designer', 'director', 'editor', 'miscellaneous crew',
+    'production designer');
+
+CREATE TYPE PRODUCTION_KIND AS
+    ENUM ('tv series', 'episode', 'movie', 'video movie',
+    'tv movie', 'video game');
+
+CREATE TABLE production
+   (uid INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    production_year INT,
+    kind PRODUCTION_KIND,
+    genre CHAR(20),
+    primary key (uid));
+
+CREATE TABLE casting
+   (uid SERIAL,
+    cid INTEGER,
+    perid INTEGER NOT NULL,
+    prodid INTEGER NOT NULL,
+    role CAST_ROLE NOT NULL,
+    primary key (uid),
+    foreign key (cid) references character (uid),
+    foreign key (perid) references person (uid),
+    foreign key (prodid) references production (uid));
+
+
+CREATE TABLE tv_series
+   (uid INTEGER NOT NULL,
+    series_years CHAR(10),
+    primary key (uid),
+    foreign key (uid) references production (uid));
+
+CREATE TABLE episode
+   (uid INTEGER NOT NULL,
+    sid INTEGER NOT NULL,
+    season SMALLINT,
+    episode INTEGER,
+    primary key (uid),
+    foreign key (uid) references production (uid),
+    foreign key (sid) references tv_serie (uid)
+    ON DELETE CASCADE);
+
+CREATE TYPE COMPANY_TYPE AS ENUM ('distributors', 'production companies');
+
+CREATE TABLE company
+   (uid INTEGER NOT NULL,
+    country_code CHAR(6),
+    name TEXT NOT NULL,
+    primary key (uid));
+
+CREATE TABLE participate
+   (uid INTEGER NOT NULL,
+    pid INTEGER NOT NULL,
+    cid INTEGER NOT NULL,
+    type COMPANY_TYPE NOT NULL,
+    primary key (uid),
+    foreign key (pid) references production(uid),
+    foreign key (cid) references company(uid));
+
+CREATE TABLE alternative_title
+   (uid INTEGER NOT NULL,
+    pid INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    primary key (uid),
+    foreign key (pid) references production (uid)
+    ON DELETE CASCADE);
+    \end{lstlisting}
 
 
 \subsection{SQL queries}
+Here are the specific queries required in the 2nd deliverable specifications.
 
 A) Number of movies per production year
     \begin{lstlisting}[
@@ -284,13 +397,48 @@ G) List the three most popular character names
     \end{lstlisting}
 \medskip
 
-\subsection{Grapical User Interface Design}
+\subsection{Index Creation}
+In order to increase our queries execution speed (which are relatively long as the server hosting our PostGreSQL database is only running a intel Atom D2500!) we created indexes on all foreign key fields in our tables.
+And, in addition to that we also created an index on $role$ in casting, $last\_name$ and $gender$ in person, $production\_year$, $genre$ and $kind$ in production and $country\_code$ in company.
 
-For the method to apply on a graphical user interface (GUI) allowing to query our movie database, we choose an opensource internet framework written in python, Django \footnote{Django Software Fondation, https://www.djangoproject.com}. The graphical design was focused on giving an open space to the user rather than a high-density function in a unique window.\\
+Here is one of the create index instructions:
+\begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\ttfamily,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+        
+    CREATE INDEX CONCURRENTLY casting_perid_index ON casting(perid);
+    \end{lstlisting}
+
+\subsection{Graphical User Interface Design}
+
+For the method to apply on a graphical user interface (GUI) allowing to query our movie database, we choose an opensource internet framework written in python, Django \footnote{Django Software Fondation, https://www.djangoproject.com} (preset queries where implemented with a pyscopg2 query but the keyword search is implemented with django Models system, but we're using the raw() function which allows us to write SQL normally for the request!). The graphical design was focused on giving an open space to the user rather than a high-density function in a unique window.\\
+
+\begin{figure}[H]
+        \includegraphics[width=\linewidth]{mainpage.png}
+        \captionsetup{justification=centering}
+        \caption{Main page v0.12}
+    \end{figure}
 
 Based on that, we design a main window with only the general search, meaning a text entry, a validation button and three radioboxes to specified what kind of search the user intend to do : by person, by movie or by casting. Once the user made a search, the results are display in a form of a list summarizing the informations retrieved from the database. The result window keeps the three general search components in case the user would want to adapt his search. We also add the possibility to recieve further informations on a part of the result by cliquing on it, this will in fact run a search query base on the type of the object of the user interest.\\
 
-Then, to display the deliverable queries and their results, we used a menu list (comparable to an onglet system) to switch from the general search (default window) to the list of the deliverable queries (at the end 21 queries). Also here cliquing on one component of this list will trigger the associated SQL query and display the results in a new window to easily adapt the layout of the results. Indeed, the kind of results may diverge greatly from a unique row to several hundreds of them.
+\begin{figure}[H]
+        \includegraphics[width=\linewidth]{result_quick.png}
+        \captionsetup{justification=centering}
+        \caption{Result of the keyword search v0.12}
+    \end{figure}
+
+Then, to display the deliverable queries and their results, we used a menu list (comparable to an onglet system) to switch from the general search (default window) to the list of the deliverable queries (at the end 21 queries). Also here clicking on one component of this list will trigger the associated SQL query and display the results in a new window to easily adapt the layout of the results. Indeed, the kind of results may diverge greatly from a unique row to several hundreds of them.
+\begin{figure}[H]
+        \includegraphics[width=\linewidth]{preset_list.png}
+        \captionsetup{justification=centering}
+        \caption{List of the preset queries v0.12}
+    \end{figure}
+    
+
 
 
 \end{document}
