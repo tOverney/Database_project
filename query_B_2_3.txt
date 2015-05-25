@@ -1,0 +1,31 @@
+QUERIE B)
+
+2. Explain the necessities of indexes (query plans)
+
+Three indexes were used in this query: person_lastname_index, casting_perid_index and production_uid_index
+
+The index on person.last_name is used in the WHERE clause. Index scan is used to find the rows matching
+the index condition <last_name = 'Damon'>. Fetching the table rows in index order make them more expensive to 
+read but there are so few that at the end it lower the reading cost. 
+The "first_name" clause is applied as a filter on the rows retrieved by the index. Using a second index on "first_name" 
+wasn't necessary since there was few output row from the first clause. It would have been more expensive to visit both 
+index.
+
+Then the index on casting.perid and on production.uid are used in the inner index scan of both LEFT JOIN 
+clause. The use of index nested loop is best when having one relation is small and the other indexed. This is the case here: 
+- <person.uid = casting.perid> : the resulted rows of person.uid are few because of the WHERE clause and there is an
+  index on casting.perid.
+- <casting.prodid> = production.uid: the resulted rows of casting.prodid are few because of the resulting left join and
+  there is an index on production.uid. 
+
+
+3. Report running time and explain the distribution of the cost based on the plans (???)
+
+HashAggregate (count() + group by clause)
+
+Nested Loop Join + index scan (2 left join)
+
+Index scan + filtering (WHERE clause)
+
+Limite + sorting (oder by clause)
+
