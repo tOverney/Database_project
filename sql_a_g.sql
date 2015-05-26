@@ -250,15 +250,13 @@ LEFT JOIN casting c2 ON c1.prodid = c2.prodid
 LEFT JOIN person p2 ON c2.perid = p2.uid
 WHERE p1.uid <> p2.uid AND p1.last_name = p2.last_name ;
 
--- E ( 409084ms = 6min 49sc)
-SELECT production_year, AVG(count)
-FROM (
-	SELECT production_year, prodid, count(*) AS count
-	FROM casting c
-	LEFT JOIN production p ON c.prodid = p.uid
-	WHERE c.role = 'actor' OR c.role = 'actress' 
-	GROUP BY prodid, production_year ) AS calcul
-GROUP BY production_year; 	-- pas certaine d'avoir compris ce qu'ils voulaient exactement mais ça semble  être le nombre 
+-- E ( 397676.537 ms = 6 min 37 s)
+SELECT p.production_year, COUNT(*) / COUNT(DISTINCT p.uid)
+FROM casting c
+LEFT JOIN production p ON c.prodid = p.uid
+WHERE c.role = 'actor' OR c.role = 'actress' 
+GROUP BY p.production_year
+ORDER BY p.production_year; 	-- pas certaine d'avoir compris ce qu'ils voulaient exactement mais ça semble  être le nombre 
 				-- d'acteur moyen par production par année
 -- F ( 23722ms = 32sc )
 SELECT AVG(num) 
