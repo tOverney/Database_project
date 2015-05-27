@@ -258,7 +258,7 @@ WHERE c.role = 'actor' OR c.role = 'actress'
 GROUP BY p.production_year
 ORDER BY p.production_year; 	-- pas certaine d'avoir compris ce qu'ils voulaient exactement mais ça semble  être le nombre 
 				-- d'acteur moyen par production par année
--- F ( 23722ms = 32sc )
+-- F ( 12428.628 ms = 12.42 s )
 SELECT AVG(num) 
 FROM (	SELECT COUNT(*) AS num
 	FROM episode

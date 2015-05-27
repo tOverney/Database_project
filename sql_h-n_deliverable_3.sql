@@ -58,7 +58,7 @@ WHERE biography LIKE '% opera singer %' AND death IS NULL
 ORDER BY age ASC ;
 
 
--- m) List of the 10 most ambiguous credits
+-- m) List of the 10 most ambiguous credits  11min 2s
 SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS nb_ambig
 FROM
 (
@@ -82,3 +82,10 @@ ORDER BY nb_ambig DESC
 LIMIT 10 ;
 
 --n) Same problem as j)
+SELECT c.country_code, ch.name, COUNT(*) AS total_use FROM company c
+ INNER JOIN participate pc ON pc.cid = c.uid
+ INNER JOIN casting cas ON pc.pid = cas.prodid
+ INNER JOIN character ch ON ch.uid = cas.cid
+ WHERE cas.cid IS NOT NULL AND c.country_code IS NOT NULL
+ GROUP BY c.country_code, ch.name
+ ORDER BY total_use DESC;
