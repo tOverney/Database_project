@@ -8,16 +8,10 @@ GROUP BY p.uid
 ORDER BY nb_seasons DESC
 LIMIT 10 ;
 
---i) Compute the top ten tv-series (number of episodes per season)
-
+--i) Compute the top ten tv-series (number of episodes per season) 20.416 secondes (ssh connection)
 SELECT p.title, 
-( 
-	count(e.episode) / 
-	CASE COUNT( DISTINCT e.season ) AS nb_seasons 
-		WHEN 0 THEN 1
-		ELSE nb_seasons
-	END
-) AS nb_episode_p_season
+(count(e.episode) / 
+	CASE COUNT( DISTINCT e.season ) WHEN 0 THEN 1 ELSE COUNT( DISTINCT e.season ) END) AS nb_episode_p_season
 FROM episode AS e
 INNER JOIN production AS p ON p.uid = e.sid AND p.kind = 'tv series'
 GROUP BY p.uid
@@ -25,9 +19,18 @@ ORDER BY nb_episode_p_season DESC
 LIMIT 10 ;
 
 
---j) Find actors, actresses and directors who have movies (including tv movies and video movies) released after their death.
+--j) Find actors, actresses and directors who have movies (including tv movies and video movies) released after their death : 111.231 secondes (ssh)
 
--- Elle n'est jamais arrivée à la fin (lancée en commande à distance, ssh) et je n'ais pas encore trouvé mieu qu'un self-join bien dégueux...
+SELECT per.first_name, per.last_name, per.death 
+FROM person As per
+LEFT OUTER JOIN casting AS c ON (per.uid = c.perid AND per.death IS NOT NULL)
+LEFT OUTER JOIN production AS prod ON (prod.uid = c.prodid)
+WHERE (prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actor' ) OR
+	(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actress' ) OR
+(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'director');
+
+-- k) Elle n'est jamais arrivée à la fin (lancée en commande à distance, ssh) et je n'ais pas encore trouvé mieu qu'un self-join bien dégueux...
+
 
 SELECT relA.*
 FROM
@@ -51,7 +54,7 @@ HAVING count(relB.*)<= 3
 ORDER BY relA.production_year DESC, nb_release DESC ;
 
 
--- l) Give every person how have 'opera singer' in their biography (only place where it appears) order from the younger to the older
+-- l) Give every person how have 'opera singer' in their biography (only place where it appears) order from the younger to the older : 7.277 secondes (ssh)
 
 SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age
 FROM person
@@ -60,7 +63,7 @@ WHERE (biography LIKE '% opera singer %' AND death IS NULL) OR
 ORDER BY age ASC ;
 
 
--- m) List of the 10 most ambiguous credits
+-- m) List of the 10 most ambiguous credits : 648.08 secondes (ssh)
 SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS deg_ambig
 FROM
 (
