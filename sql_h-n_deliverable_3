@@ -34,15 +34,15 @@ FROM
 (
 	SELECT production_year, name, count(prod.uid) AS nb_release
 	FROM company AS comp 
-	INNER JOIN participate AS part ON comp.uid=part.cid
-	INNER JOIN production AS prod ON part.pid = prod.uid AND prod.kind = 'movie' AND prod.production_year IS NOT NULL
+	LEFT JOIN participate AS part ON comp.uid=part.cid
+	LEFT JOIN production AS prod ON part.pid = prod.uid AND prod.kind = 'movie' AND prod.production_year IS NOT NULL
 	GROUP BY production_year,comp.uid
 ) AS relA,
 (
 	SELECT production_year, name, count(prod.uid) AS nb_release
 	FROM company AS comp 
-	INNER JOIN participate AS part ON comp.uid=part.cid
-	INNER JOIN production AS prod ON part.pid = prod.uid AND prod.kind = 'movie' AND prod.production_year IS NOT NULL
+	LEFT JOIN participate AS part ON comp.uid=part.cid
+	LEFT JOIN production AS prod ON part.pid = prod.uid AND prod.kind = 'movie' AND prod.production_year IS NOT NULL
 	GROUP BY production_year,comp.uid
 ) AS relB
 WHERE relB.nb_release>=relA.nb_release AND relB.production_year = relA.production_year
@@ -50,16 +50,18 @@ GROUP BY relA.production_year, relA.name, relA.nb_release
 HAVING count(relB.*)<= 3
 ORDER BY relA.production_year DESC, nb_release DESC ;
 
+
 -- l) Give every person how have 'opera singer' in their biography (only place where it appears) order from the younger to the older
 
 SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age
 FROM person
-WHERE biography LIKE '% opera singer %' AND death IS NULL
+WHERE (biography LIKE '% opera singer %' AND death IS NULL) OR
+(trivia LIKE '% opera singer %' AND death IS NULL)
 ORDER BY age ASC ;
 
 
 -- m) List of the 10 most ambiguous credits
-SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS nb_ambig
+SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS deg_ambig
 FROM
 (
 	SELECT per.uid, per.first_name, per.last_name, count(*)+1 as nb_alias
@@ -78,7 +80,33 @@ WHERE EXISTS (
 	FROM casting AS cas
 	WHERE cas.prodid = prod.uid AND cas.perid = per.uid
 )
-ORDER BY nb_ambig DESC
+ORDER BY deg_ambig DESC
 LIMIT 10 ;
 
 --n) Same problem as j)
+
+SELECT DISTINCT comp.country_code, char.name, count(char.name) as nb_char
+FROM company as comp,
+(
+	SELECT comp.country_code, char.name
+	FROM company as comp
+	INNER JOIN participate as part ON part.cid=comp.uid AND part.type= 'production company'
+	INNER JOIN production as prod ON prod.uid = part.pid
+	INNER JOIN casting AS cas ON prod.uid = cas.prodid
+	INNER JOIN character AS char ON char.uid = cas.cid
+) AS char
+WHERE comp.country_code = char.country_code
+GROUP BY comp.country_code, char.name
+ORDER BY nb_char DESC;
+
+SELECT DISTINCT comp1.country_code, char2.name, char2.nb_char
+FROM( SELECT char.name, count(*) as nb_char FROM company as comp
+	INNER JOIN participate as part ON part.cid=comp.uid AND part.type= 'production company' AND comp.country_code = comp1.country_code
+	INNER JOIN production as prod ON prod.uid = part.pid
+	INNER JOIN casting AS cas ON prod.uid = cas.prodid
+	INNER JOIN character AS char ON char.uid = cas.cid
+	GROUP BY char.name
+	ORDER BY nb_char DESC
+	LIMIT 1) as char2,
+company as comp1;
+
