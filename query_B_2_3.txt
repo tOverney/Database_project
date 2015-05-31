@@ -1,6 +1,27 @@
 QUERIE B)
 
-2. Explain the necessities of indexes (query plans)
+Query plan : 
+"Subquery Scan on year  (cost=1709.10..1709.11 rows=1 width=4) (actual time=7.375..7.377 rows=1 loops=1)"
+"  ->  Limit  (cost=1709.10..1709.10 rows=1 width=4) (actual time=7.373..7.373 rows=1 loops=1)"
+"        ->  Sort  (cost=1709.10..1709.12 rows=7 width=4) (actual time=7.371..7.371 rows=1 loops=1)"
+"              Sort Key: (count(*))"
+"              Sort Method: top-N heapsort  Memory: 25kB"
+"              ->  HashAggregate  (cost=1708.99..1709.06 rows=7 width=4) (actual time=7.208..7.231 rows=41 loops=1)"
+"                    Group Key: production.production_year"
+"                    ->  Nested Loop Left Join  (cost=1.43..1708.96 rows=7 width=4) (actual time=0.189..6.733 rows=187 loops=1)"
+"                          ->  Nested Loop Left Join  (cost=1.00..1705.72 rows=7 width=4) (actual time=0.155..0.905 rows=187 loops=1)"
+"                                ->  Index Scan using person_lastname_index on person  (cost=0.43..469.82 rows=1 width=4) (actual time=0.108..0.351 rows=2 loops=1)"
+"                                      Index Cond: (last_name = 'Reno'::text)"
+"                                      Filter: (first_name = 'Jean'::text)"
+"                                      Rows Removed by Filter: 126"
+"                                ->  Index Scan using casting_perid_index on casting  (cost=0.56..1230.14 rows=576 width=8) (actual time=0.036..0.192 rows=94 loops=2)"
+"                                      Index Cond: (person.uid = perid)"
+"                          ->  Index Scan using production_uid_index on production  (cost=0.43..0.45 rows=1 width=8) (actual time=0.026..0.028 rows=1 loops=187)"
+"                                Index Cond: (casting.prodid = uid)"
+"Planning time: 6.776 ms"
+"Execution time: 8.074 ms"
+
+2/3. Explain the necessities of indexes (query plans), report running time and explain the distribution of the cost based on the plans 
 
 Three indexes were used in this query: person_lastname_index, casting_perid_index and production_uid_index
 
@@ -18,14 +39,4 @@ clause. The use of index nested loop is best when having one relation is small a
 - <casting.prodid> = production.uid: the resulted rows of casting.prodid are few because of the resulting left join and
   there is an index on production.uid. 
 
-
-3. Report running time and explain the distribution of the cost based on the plans (???)
-
-HashAggregate (count() + group by clause)
-
-Nested Loop Join + index scan (2 left join)
-
-Index scan + filtering (WHERE clause)
-
-Limite + sorting (oder by clause)
 
