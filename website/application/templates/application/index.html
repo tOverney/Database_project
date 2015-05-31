@@ -1,12 +1,43 @@
+{% load staticfiles %}
 {% load index %}
-<h1>Select one of the preset queries</h1>
-<p>Please be patient, only has a poor Atom and a good old 5400rpm HDD</p>
-{% if queries %}
-    <ul>
-    {% for i in range %}
-        <li><a href="/application/{{ i }}/">{{ queries|index:i|index:0 }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Internal error, sorry!</p>
-{% endif %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Poor men's IMDB</title>
+
+
+<link rel="stylesheet" href="static/application/side-menu.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+</head>
+<body>
+<div id="layout">
+    <a href="#menu" id="menuLink" class="menu-link">
+        <span></span>
+    </a>
+    
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading" href="#">Preset Queries</a>
+
+            <ul class="pure-menu-list">
+                {% for i in range %}<li class="pure-menu-item">
+                    <a href="/application/{{ i }}/" class="pure-menu-link">{{ queries|index:i|index:0 }}</a>
+                </li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="main">
+        <div class="header">
+            <h1>Search by keyword</h1>
+            <h2>Please be patient, this server only has a poor Atom and a good old 5400rpm HDD</h2>
+        </div>
+    </div>
+    <div class="content">
+    </div>
+</div>
+
+<script src="http://purecss.io/combo/1.18.13?/js/ui.js"></script>
+</body>
+</html>
