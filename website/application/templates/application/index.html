@@ -1,8 +1,9 @@
+{% load index %}
 <h1>Select one of the preset queries</h1>
 {% if queries %}
     <ul>
     {% for i in range %}
-        <li><a href="/application/{{ i }}/"> Hello {{ queries.i.0 }}</a></li>
+        <li><a href="/application/{{ i }}/">{{ queries|index:i|index:0 }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

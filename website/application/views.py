@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 
-import psycopg2
+from django.db import connection
 
 # Create your views here.
 required_queries = [
-    ['Number of movies per year (includes tv and video movies)',
+    ["Number of movies per year (includes tv and video movies)",
     """SELECT production_year, COUNT(*) FROM production
     WHERE (kind = 'movie'
         OR kind = 'tv movie'
@@ -15,7 +15,7 @@ required_queries = [
     ORDER BY production_year ASC;""",
     ("Year of production", "# of production that year")],
 
-    ['Ten countries with the most production companies',
+    ["Ten countries with the most production companies",
     """SELECT c.country_code, COUNT(DISTINCT c.uid) AS count FROM company c
     LEFT JOIN participate par ON c.uid = par.cid
     WHERE par.type = 'production companies'
@@ -25,7 +25,7 @@ required_queries = [
     LIMIT 10;""",
     ("Country code", "# production companies")],
 
-    ['Min, max and average career duration',
+    ["Min, max and average career duration",
     """SELECT avg(duration) AS avg_duration, MAX(duration) AS max_duration,
     MIN(duration) AS min_duration
     FROM (
@@ -35,7 +35,7 @@ required_queries = [
     GROUP BY c.perid) AS career_duration;""",
     ("Average duration", "Max duration", "Min duration")],
 
-    ['Min, max and average number of actors in a production',
+    ["Min, max and average number of actors in a production",
     """SELECT avg(numb) AS avg_nb_act, MAX(numb) AS max_nb_act, MIN(numb) AS min_nb_act
     FROM (  SELECT count(*) AS numb
     FROM casting
@@ -58,28 +58,25 @@ def result(request, query_index) :
 
     current = required_queries[query_index]
     # opening connection to the database
-    try:
-        conn = psycopg2.connect(
-            """dbname='postgres' user="webSelector" host='localhost' password='thisisnotasecurepassword'""")
-    except psycopg2.Error as e:
-        return HttpResponse(e.pgerror)
-    cur = conn.cursor()
+    cur = connection.cursor()
 
     # do the selection
-    try:
-        cur.execute(current[1])
-        conn.commit()
-    except psycopg2.Error as e:
-        return HttpResponse(e.pgerror)
-        quit()
+
+    cur.execute(current[1])
+    connection.commit()
+
 
     # fetch the result 
     result_array = cur.fetchall()
 
     # we close everything db related
     cur.close()
-    conn.close()
+    connection.close()
 
+    if len(result_array) == 0:
+        raise Http404("Empty result..")
+
+    # [["Bidon", "Bbb"],["Citron", "ccc"]]
     context = {'query_name' : current[0],
         'query_result' : result_array,
         'col_title' : current[2]}
