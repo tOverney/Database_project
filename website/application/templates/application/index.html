@@ -35,6 +35,24 @@
         </div>
     </div>
     <div class="content">
+        <form class="pure-form pure-form-aligned">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="keyword">Keyword</label>
+                    <input id="keyword" type="text" placeholder="Pitt, Ocean's Eleven, etc.">
+                </div>
+                <div class="pure-control-group">
+                    {% csrf_token %}
+                    {% for kw in keywords %}
+                        <input type="radio" name="kw_choice" id="kw_choice{{ forloop.counter }}" value="{{ kw }}" />
+                        <label for="kw_choice{{ forloop.counter }}">
+                            {{ choice.choice_text }}</label><br />
+                    {{% endfor %}}
+                <div class="pure-controls">
+                    <input type="submit" class="pure-button pure-button-primary" value="Search"/>
+                </div>
+            </fieldset>
+        </form>
     </div>
 </div>
 

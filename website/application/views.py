@@ -43,9 +43,11 @@ required_queries = [
     GROUP BY prodid) AS number;""",
     ("Average # actors", "Max # actors", "Min # actors")]]
 
+keywords = ["Person", "Production", "Character", "Company"]
+
 def index(request) :
 
-    context = {'queries' : required_queries, 'range' : range(len(required_queries))}
+    context = {'queries' : required_queries, 'range' : range(len(required_queries)), 'keywords' : keywords}
 
     return render(request, 'application/index.html', context)
 
