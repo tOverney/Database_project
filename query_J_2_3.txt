@@ -1,0 +1,35 @@
+QUERIE J)\\
+
+SELECT per.first_name, per.last_name, per.death 
+FROM person As per
+LEFT OUTER JOIN casting AS c ON (per.uid = c.perid AND per.death IS NOT NULL)
+LEFT OUTER JOIN production AS prod ON (prod.uid = c.prodid)
+WHERE (prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actor' ) OR
+	(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actress' ) OR
+(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'director');
+
+Query plan :\\
+ Nested Loop  (cost=117340.56..1455804.06 rows=60763 width=17)
+   Join Filter: ((prod.production_year)::double precision > date_part('year'::text, (per.death)::timestamp without time zone))
+   ->  Hash Join  (cost=117340.13..1368053.03 rows=182290 width=21)
+         Hash Cond: (c.perid = per.uid)
+         ->  Seq Scan on casting c  (cost=0.00..1029263.28 rows=21962672 width=8)
+               Filter: ((role = 'actor'::cast_role) OR (role = 'actress'::cast_role) OR (role = 'director'::cast_role))
+         ->  Hash  (cost=116700.22..116700.22 rows=51193 width=21)
+               ->  Seq Scan on person per  (cost=0.00..116700.22 rows=51193 width=21)
+                     Filter: (death IS NOT NULL)
+   ->  Index Scan using production_uid_index on production prod  (cost=0.43..0.46 rows=1 width=8)
+         Index Cond: (uid = c.prodid)
+(11 rows)\\
+
+Time: 5.659 ms\\
+
+2/3. Explain the necessities of indexes (query plans), report running time and explain the distribution of the cost based on the plans\\ 
+
+Only one index is used by postgres in this query : production_uid_index. But several others indexes could used in the joins : casting_prodid_index,  casting_role_index,casting_perid_index. But postgres used sequencial scan on the join's conditions.\\
+
+The index on the production.uid is used to efficiently join casting and production accoriding to his id.
+
+production_year_index is also not used 
+
+Except for production_year_index in the WHERE clause

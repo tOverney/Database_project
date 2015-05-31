@@ -54,7 +54,7 @@ HAVING count(relB.*)<= 3
 ORDER BY relA.production_year DESC, nb_release DESC ;
 
 
--- l) Give every person how have 'opera singer' in their biography (only place where it appears) order from the younger to the older : 7.277 secondes (ssh)
+-- l) Give every person how have 'opera singer' in their biography or trivia (only places where it appears) order from the younger to the older : 7.277 secondes (ssh)
 
 SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age
 FROM person
@@ -62,7 +62,11 @@ WHERE (biography LIKE '% opera singer %' AND death IS NULL) OR
 (trivia LIKE '% opera singer %' AND death IS NULL)
 ORDER BY age ASC ;
 
-
+-- l bis) 10.370 secondes
+SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age
+FROM person
+WHERE (biography LIKE '% opera singer %' OR trivia LIKE '% opera singer %' AND death IS NULL) AND death IS NULL
+ORDER BY age ASC ;
 
 -- m) List of the 10 most ambiguous credits : 648.08 secondes (ssh)
 SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS deg_ambig
