@@ -440,428 +440,505 @@ Then, to display the deliverable queries and their results, we used a menu list 
 %************************************THIRD*DELIVERABLE*********************************
 \section{Third deliverable}
 
+\subsection{GUI update}
+
+In order to fit the new requirements of deliverable 3 for our GUI and due to technical difficulties, we finally went for a website.
+
+Following are two screen shot presenting the interface.
+
+\begin{figure}[H]
+        \includegraphics[width=\linewidth]{main_frame.png}
+        \captionsetup{justification=centering}
+        \caption{Main page with the search function and the preset queries choice v0.16.}
+    \end{figure}
+
+Although everything is fully functional, we are sorry for the appearance of certain pages which can be called "barebone".
+
+\begin{figure}[H]
+        \includegraphics[width=\linewidth]{result.png}
+        \captionsetup{justification=centering}
+        \caption{Typical result page v0.16.}
+    \end{figure}
+
+
 \subsection{SQL queries}
 
-A)\\
-SELECT DISTINCT p1.uid as person_id, c1.prodid as production_id\\
-FROM person p1\\
-LEFT JOIN casting c1 ON p1.uid = c1.perid\\
-LEFT JOIN casting c2 ON c1.prodid = c2.prodid\\
-LEFT JOIN person p2 ON c2.perid = p2.uid\\
-WHERE (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year') \\
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )\\
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )\\
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year');\\
+\begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\tiny,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+A)
+SELECT DISTINCT p1.uid as person_id, c1.prodid as production_id
+FROM person p1
+LEFT JOIN casting c1 ON p1.uid = c1.perid
+LEFT JOIN casting c2 ON c1.prodid = c2.prodid
+LEFT JOIN person p2 ON c2.perid = p2.uid
+WHERE (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year')
+OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )
+OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )
+OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year');
 
-B)\\
-SELECT production_year\\
-FROM (\\
-	SELECT production_year, COUNT(*) AS count\\
-	FROM ( SELECT production_year\\
-		FROM person\\
-		LEFT JOIN casting ON person.uid = casting.perid \\
-		LEFT JOIN production ON casting.prodid = production.uid\\
-		WHERE last_name = 'Cooper' AND first_name = 'Bradley'\\
-		) AS prod_year\\
-	GROUP BY production_year\\
-	ORDER BY count DESC LIMIT 1\\
-	) AS year;\\
+B)
+SELECT production_year
+FROM (
+	SELECT production_year, COUNT(*) AS count
+	FROM ( SELECT production_year
+		FROM person
+		LEFT JOIN casting ON person.uid = casting.perid
+		LEFT JOIN production ON casting.prodid = production.uid
+		WHERE last_name = 'Cooper' AND first_name = 'Bradley'
+		) AS prod_year
+	GROUP BY production_year
+	ORDER BY count DESC LIMIT 1
+	) AS year;
 
-C)\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Action'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Adventure' \\ 
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Animation'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Biography'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Comedy'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Crime'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Documentary'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Drama'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Family'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Fantasy'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Film-Noir'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Game-Show'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'History'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Horror'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Music'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Musical' \\ 
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Mystery'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'News'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Reality-TV'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Romance'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Sci-Fi'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Short'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Sport'  \\
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Talk-Show'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Thriller'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION \\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'War' \\ 
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
-UNION\\
-(SELECT genre, name, count(*) as nombre_de_prod\\
-FROM participate pa\\
-LEFT JOIN production p ON pa.pid = p.uid\\
-LEFT JOIN company c ON pa.cid = c.uid\\
-WHERE production_year = 2000 AND p.genre = 'Western'\\  
-GROUP BY name, genre\\
-ORDER BY nombre_de_prod DESC LIMIT 1)\\
+C)
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Action'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Adventure'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Animation'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Biography'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Comedy'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Crime'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Documentary'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Drama'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Family'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Fantasy'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Film-Noir'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Game-Show'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'History'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Horror'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Music'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Musical'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Mystery'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'News'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Reality-TV'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Romance'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Sci-Fi'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Short'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Sport'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Talk-Show'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Thriller'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION 
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'War'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1)
+UNION
+(SELECT genre, name, count(*) as nombre_de_prod
+FROM participate pa
+LEFT JOIN production p ON pa.pid = p.uid
+LEFT JOIN company c ON pa.cid = c.uid
+WHERE production_year = 2000 AND p.genre = 'Western'  
+GROUP BY name, genre
+ORDER BY nombre_de_prod DESC LIMIT 1);
 
-D)\\
-SELECT c1.prodid, p1.last_name, p1.first_name, p2.last_name, p2.first_name\\
-FROM casting c1\\
-LEFT JOIN person p1 ON c1.perid = p1.uid\\
-LEFT JOIN casting c2 ON c1.prodid = c2.prodid\\
-LEFT JOIN person p2 ON c2.perid = p2.uid\\
-WHERE p1.uid <> p2.uid AND p1.last_name = p2.last_name ;\\
+D)
+SELECT c1.prodid, p1.last_name, p1.first_name, p2.last_name, p2.first_name
+FROM casting c1
+LEFT JOIN person p1 ON c1.perid = p1.uid
+LEFT JOIN casting c2 ON c1.prodid = c2.prodid
+LEFT JOIN person p2 ON c2.perid = p2.uid
+WHERE p1.uid <> p2.uid AND p1.last_name = p2.last_name ;
 
-E)\\
-SELECT p.production_year, COUNT(*) / COUNT(DISTINCT p.uid)\\
-FROM casting c\\
-LEFT JOIN production p ON c.prodid = p.uid\\
-WHERE c.role = 'actor' OR c.role = 'actress'\\ 
-GROUP BY p.production_year\\
-ORDER BY p.production_year;\\
+E)
+SELECT p.production_year, COUNT(*) / COUNT(DISTINCT p.uid)
+FROM casting c
+LEFT JOIN production p ON c.prodid = p.uid
+WHERE c.role = 'actor' OR c.role = 'actress'
+GROUP BY p.production_year
+ORDER BY p.production_year;
 
-F)\\
-SELECT AVG(num) \\
-FROM (	SELECT COUNT(*) AS num\\
-	FROM episode\\
-	GROUP BY sid, season\\
-	) AS nb_episode;\\
+F)
+SELECT AVG(num)
+FROM (	SELECT COUNT(*) AS num
+	FROM episode
+	GROUP BY sid, season
+	) AS nb_episode;
 
-G)\\
-SELECT AVG (numb) \\
-FROM 	(SELECT count(DISTINCT season) AS numb\\
-	FROM episode\\
-	GROUP BY sid\\
-	) AS count;\\
+G)
+SELECT AVG (numb) 
+FROM 	(SELECT count(DISTINCT season) AS numb
+	FROM episode
+	GROUP BY sid
+	) AS count;
 
-H)\\
-SELECT p.title, COUNT( DISTINCT e.season ) AS nb_seasons\\
-FROM episode AS e, production AS p\\
-WHERE p.uid = e.sid AND p.kind = 'tv series'\\
-GROUP BY p.uid\\
-ORDER BY nb_seasons DESC\\
-LIMIT 10 ;\\
+H)
+SELECT p.title, COUNT( DISTINCT e.season ) AS nb_seasons
+FROM episode AS e, production AS p
+WHERE p.uid = e.sid AND p.kind = 'tv series'
+GROUP BY p.uid
+ORDER BY nb_seasons DESC
+LIMIT 10 ;
 
-I)\\
-SELECT p.title,\\ 
-(count(e.episode) / CASE COUNT( DISTINCT e.season ) WHEN 0 THEN 1 ELSE COUNT( DISTINCT e.season ) END) AS nb_episode_p_season\\
-FROM episode AS e\\
-INNER JOIN production AS p ON p.uid = e.sid AND p.kind = 'tv series'\\
-GROUP BY p.uid\\
-ORDER BY nb_episode_p_season DESC\\
-LIMIT 10 ;\\
+I)
+SELECT p.title,
+(count(e.episode) / CASE COUNT( DISTINCT e.season ) WHEN 0 THEN 1 ELSE COUNT( DISTINCT e.season ) END) AS nb_episode_p_season
+FROM episode AS e
+INNER JOIN production AS p ON p.uid = e.sid AND p.kind = 'tv series'
+GROUP BY p.uid
+ORDER BY nb_episode_p_season DESC
+LIMIT 10 ;
 
-J)\\
-SELECT per.first_name, per.last_name, per.death \\
-FROM person As per\\
-LEFT OUTER JOIN casting AS c ON (per.uid = c.perid AND per.death IS NOT NULL)\\
-LEFT OUTER JOIN production AS prod ON (prod.uid = c.prodid)\\
-WHERE (prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actor' ) OR\\
-	(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actress' ) OR\\
-(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'director');\\
+J)
+SELECT per.first_name, per.last_name, per.death 
+FROM person As per
+LEFT OUTER JOIN casting AS c ON (per.uid = c.perid AND per.death IS NOT NULL)
+LEFT OUTER JOIN production AS prod ON (prod.uid = c.prodid)
+WHERE (prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actor' ) OR
+	(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'actress' ) OR
+(prod.production_year > EXTRACT( YEAR FROM per.death) AND c.role = 'director');
 
-K)\\
-SELECT DISTINCT production_year AS year, comp.name, num_movie, Rank\\
-FROM(\\
-    SELECT DISTINCT *, RANK() OVER (PARTITION BY production_year ORDER BY num_movie DESC) AS Rank\\
-    FROM (\\
-        SELECT part.cid, prod.production_year, COUNT(*) AS num_movie\\
-        FROM production AS prod\\
-        JOIN participate AS part ON prod.uid = part.pid\\
-        WHERE prod.production_year IS NOT NULL\\
-        GROUP BY part.cid, prod.production_year\\
-    ) AS MoviesPerCompanyInAYear\\
-) AS MoviesPerCompanyInAYearWithRank\\
-JOIN company AS comp ON comp.uid = cid\\
-WHERE Rank <= 3\\
-ORDER BY production_year, num_movie DESC;\\
+K)
+SELECT DISTINCT production_year AS year, comp.name, num_movie, Rank
+FROM(
+    SELECT DISTINCT *, RANK() OVER (PARTITION BY production_year ORDER BY num_movie DESC) AS Rank
+    FROM (
+        SELECT part.cid, prod.production_year, COUNT(*) AS num_movie
+        FROM production AS prod
+        JOIN participate AS part ON prod.uid = part.pid
+        WHERE prod.production_year IS NOT NULL
+        GROUP BY part.cid, prod.production_year
+    ) AS MoviesPerCompanyInAYear
+) AS MoviesPerCompanyInAYearWithRank
+JOIN company AS comp ON comp.uid = cid
+WHERE Rank <= 3
+ORDER BY production_year, num_movie DESC;
 
-L)\\
-SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age\\
-FROM person\\
-WHERE (biography LIKE '% opera singer %' AND death IS NULL) OR\\
-(trivia LIKE '% opera singer %' AND death IS NULL)\\
-ORDER BY age ASC ;\\
+L)
+SELECT first_name, last_name, DATE_PART('year',NOW())-DATE_PART('year', birth) AS age
+FROM person
+WHERE (biography LIKE '% opera singer %' AND death IS NULL) OR
+(trivia LIKE '% opera singer %' AND death IS NULL)
+ORDER BY age ASC ;
 
-M)\\
-SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS deg_ambig\\
-FROM\\
-(\\
-	SELECT per.uid, per.first_name, per.last_name, count(*)+1 as nb_alias\\
-	FROM person AS per\\
-	INNER JOIN alternative_name AS a_name ON a_name.pid = per.uid\\
-	GROUP BY per.uid\\
-) AS per,\\
-(\\
-	SELECT prod.uid, prod.title, prod.production_year, count(*)+1 as nb_alias\\
-	FROM production AS prod\\
-	INNER JOIN alternative_title AS a_title ON prod.uid = a_title.pid\\
-	GROUP BY prod.uid\\
-) AS prod\\
-WHERE EXISTS (\\ 
-	SELECT *\\
-	FROM casting AS cas\\
-	WHERE cas.prodid = prod.uid AND cas.perid = per.uid\\
-)\\
-ORDER BY deg_ambig DESC\\
-LIMIT 10 ;\\
+M)
+SELECT prod.title, prod.production_year, per.first_name, per.last_name, prod.nb_alias * per.nb_alias AS deg_ambig
+FROM
+(
+	SELECT per.uid, per.first_name, per.last_name, count(*)+1 as nb_alias
+	FROM person AS per
+	INNER JOIN alternative_name AS a_name ON a_name.pid = per.uid
+	GROUP BY per.uid
+) AS per,
+(
+	SELECT prod.uid, prod.title, prod.production_year, count(*)+1 as nb_alias
+	FROM production AS prod
+	INNER JOIN alternative_title AS a_title ON prod.uid = a_title.pid
+	GROUP BY prod.uid
+) AS prod
+WHERE EXISTS (
+	SELECT *
+	FROM casting AS cas
+	WHERE cas.prodid = prod.uid AND cas.perid = per.uid
+)
+ORDER BY deg_ambig DESC
+LIMIT 10 ;
 
-N)\\
-SELECT  country_code, name, name_tot\\
-FROM(\\
-    SELECT DISTINCT *, RANK() OVER (PARTITION BY country_code ORDER BY name_tot DESC) AS rank\\
-    FROM (\\
-        SELECT DISTINCT comp.country_code, char.name, COUNT(*) AS name_tot\\
-       FROM company as comp\\
-	JOIN participate as part ON part.cid=comp.uid AND part.type= 'production company'\\
-	JOIN production as prod ON prod.uid = part.pid\\
-	JOIN casting AS cas ON prod.uid = cas.prodid\\
-	JOIN character AS char ON char.uid = cas.cid\\
-        WHERE comp.country_code IS NOT NULL\\
-        GROUP BY comp.country_code, char.name\\
-    ) AS NameWithNameCountPerCountry\\
-) AS NameWithNameCountPerCountryWithRank\\
-WHERE rank <= 1\\
-ORDER BY country_code ASC;\\
+N)
+SELECT  country_code, name, name_tot
+FROM(
+    SELECT DISTINCT *, RANK() OVER (PARTITION BY country_code ORDER BY name_tot DESC) AS rank
+    FROM (
+        SELECT DISTINCT comp.country_code, char.name, COUNT(*) AS name_tot
+       FROM company as comp
+	JOIN participate as part ON part.cid=comp.uid AND part.type= 'production company'
+	JOIN production as prod ON prod.uid = part.pid
+	JOIN casting AS cas ON prod.uid = cas.prodid
+	JOIN character AS char ON char.uid = cas.cid
+        WHERE comp.country_code IS NOT NULL
+        GROUP BY comp.country_code, char.name
+    ) AS NameWithNameCountPerCountry
+) AS NameWithNameCountPerCountryWithRank
+WHERE rank <= 1
+ORDER BY country_code ASC;
+    \end{lstlisting}
 
 \subsection{Query plan, index utility and cost distribution}
 
 For the present and following sections we have choosen three queries, the B), J) and .\\
 
 B) Query plan \\
-"Subquery Scan on year  (cost=1709.10..1709.11 rows=1 width=4) (actual time=7.375..7.377 rows=1 loops=1)"\\
-"  ->  Limit  (cost=1709.10..1709.10 rows=1 width=4) (actual time=7.373..7.373 rows=1 loops=1)"\\
-"        ->  Sort  (cost=1709.10..1709.12 rows=7 width=4) (actual time=7.371..7.371 rows=1 loops=1)"\\
-"              Sort Key: (count(*))"\\
-"              Sort Method: top-N heapsort  Memory: 25kB"\\
-"              ->  HashAggregate  (cost=1708.99..1709.06 rows=7 width=4) (actual time=7.208..7.231 rows=41 loops=1)"\\
-"                    Group Key: production.production_year"\\
-"                    ->  Nested Loop Left Join  (cost=1.43..1708.96 rows=7 width=4) (actual time=0.189..6.733 rows=187 loops=1)"\\
-"                          ->  Nested Loop Left Join  (cost=1.00..1705.72 rows=7 width=4) (actual time=0.155..0.905 rows=187 loops=1)"\\
-"                                ->  Index Scan using person_lastname_index on person  (cost=0.43..469.82 rows=1 width=4) (actual time=0.108..0.351 rows=2 loops=1)"\\
-"                                      Index Cond: (last_name = 'Reno'::text)"\\
-"                                      Filter: (first_name = 'Jean'::text)"\\
-"                                      Rows Removed by Filter: 126"\\
-"                                ->  Index Scan using casting_perid_index on casting  (cost=0.56..1230.14 rows=576 width=8) (actual time=0.036..0.192 rows=94 loops=2)"\\
-"                                      Index Cond: (person.uid = perid)"\\
-"                          ->  Index Scan using production_uid_index on production  (cost=0.43..0.45 rows=1 width=8) (actual time=0.026..0.028 rows=1 loops=187)"\\
-"                                Index Cond: (casting.prodid = uid)"\\
-"Planning time: 6.776 ms"\\
-"Execution time: 8.074 ms"\\
+\begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\tiny,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+Subquery Scan on year  (cost=1709.10..1709.11 rows=1 width=4) (actual time=7.375..7.377 rows=1 loops=1)
+  ->  Limit  (cost=1709.10..1709.10 rows=1 width=4) (actual time=7.373..7.373 rows=1 loops=1)
+  ->  Sort  (cost=1709.10..1709.12 rows=7 width=4) (actual time=7.371..7.371 rows=1 loops=1)
+       Sort Key: (count(*))
+       Sort Method: top-N heapsort  Memory: 25kB
+  ->  HashAggregate  (cost=1708.99..1709.06 rows=7 width=4) (actual time=7.208..7.231 rows=41 loops=1)
+       Group Key: production.production_year
+  ->  Nested Loop Left Join  (cost=1.43..1708.96 rows=7 width=4) (actual time=0.189..6.733 rows=187 loops=1)
+  ->  Nested Loop Left Join  (cost=1.00..1705.72 rows=7 width=4) (actual time=0.155..0.905 rows=187 loops=1)
+  ->  Index Scan using person_lastname_index on person  (cost=0.43..469.82 rows=1 width=4)
+  (actual time=0.108..0.351 rows=2 loops=1)
+        Index Cond: (last_name = 'Reno'::text)
+        Filter: (first_name = 'Jean'::text)
+        Rows Removed by Filter: 126
+  ->  Index Scan using casting_perid_index on casting  (cost=0.56..1230.14 rows=576 width=8)
+  (actual time=0.036..0.192 rows=94 loops=2)
+        Index Cond: (person.uid = perid)
+  ->  Index Scan using production_uid_index on production  (cost=0.43..0.45 rows=1 width=8)
+  (actual time=0.026..0.028 rows=1 loops=187)
+        Index Cond: (casting.prodid = uid)
+Planning time: 6.776 ms
+Execution time: 8.074 ms
+    \end{lstlisting}
 
-Three indexes were used in this query: person_lastname_index, casting_perid_index and production_uid_index.\\
 
-The index on person.last_name is used in the WHERE clause. Index scan is used to find the rows matching the index condition <last_name = 'Damon'>. Fetching the table rows in index order make them more expensive to read but there are so few that at the end it lower the reading cost. \\
+Three indexes were used in this query: $person\_lastname\_index$, $casting\_perid\_index$ and $production\_uid\_index$.\\
 
-The "first_name" clause is applied as a filter on the rows retrieved by the index. Using a second index on "first_name" wasn't necessary since there was few output row from the first clause. It would have been more expensive to visit both index. \\
+The index on person.$last\_name$ is used in the WHERE clause. Index scan is used to find the rows matching the index condition $<last\_name = 'Damon'>$. Fetching the table rows in index order make them more expensive to read but there are so few that at the end it lower the reading cost. \\
+
+The $first\_name$ clause is applied as a filter on the rows retrieved by the index. Using a second index on $first\_name$ wasn't necessary since there was few output row from the first clause. It would have been more expensive to visit both index. \\
 
 Then the index on casting.perid and on production.uid are used in the inner index scan of both LEFT JOIN clause. The use of index nested loop is best when having one relation is small and the other indexed. This is the case here:
 \begin{itemize}
-\item \<person.uid = casting.perid\> : the resulted rows of person.uid are few because of the WHERE clause and there is an index on casting.perid.\\
-\item \<casting.prodid> = production.uid : the resulted rows of casting.prodid are few because of the resulting left join and there is an index on production.uid. \\
+\item $<person.uid = casting.perid>$ : the resulted rows of person.uid are few because of the WHERE clause and there is an index on casting.perid.\\
+\item $<casting.prodid> = production.uid$ : the resulted rows of casting.prodid are few because of the resulting left join and there is an index on production.uid. \\
 \end{itemize}
 
+E) Query plan \\
+ \begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\tiny,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+ GroupAggregate  (cost=4746082.22..4954152.73 rows=126 width=8)
+   Group Key: p.production_year
+   ->  Sort  (cost=4746082.22..4798099.46 rows=20806893 width=8)
+         Sort Key: p.production_year
+         ->  Hash Left Join  (cost=137745.21..1648007.31 rows=20806893 width=8)
+               Hash Cond: (c.prodid = p.uid)
+               ->  Seq Scan on casting c  (cost=0.00..919147.24 rows=20806893 width=4)
+                     Filter: ((role = 'actor'::cast_role) OR (role = 'actress'::cast_role))
+               ->  Hash  (cost=85570.98..85570.98 rows=3180098 width=8)
+                     ->  Seq Scan on production p  (cost=0.00..85570.98 rows=3180098 width=8)
+(10 rows)
+
+Time: 177.066 ms
+\end{lstlisting}
+
+There are no indexes involved in this query plan. But even with indexes, which should impact the performance in a significant way because, as we can see, one of the two most expensive operation for this query is the sort on the $production\_year$. With an index on that column we should be able to speed the process up. Regarding the second big time sink, the group aggregate, this would not be significantly impacted by the addition of an index on $production\_year$ field.
+And as usual, the join messes up the importance of indexes.
+
 J) Query plan \\
- Nested Loop  (cost=117340.56..1455804.06 rows=60763 width=17)\\
-   Join Filter: ((prod.production_year)::double precision > date_part('year'::text, (per.death)::timestamp without time zone))\\
-   ->  Hash Join  (cost=117340.13..1368053.03 rows=182290 width=21)\\
-         Hash Cond: (c.perid = per.uid)\\
-         ->  Seq Scan on casting c  (cost=0.00..1029263.28 rows=21962672 width=8)\\
-               Filter: ((role = 'actor'::cast_role) OR (role = 'actress'::cast_role) OR (role = 'director'::cast_role))\\
-         ->  Hash  (cost=116700.22..116700.22 rows=51193 width=21)\\
-               ->  Seq Scan on person per  (cost=0.00..116700.22 rows=51193 width=21)\\
-                     Filter: (death IS NOT NULL)\\
-   ->  Index Scan using production_uid_index on production prod  (cost=0.43..0.46 rows=1 width=8)\\
-         Index Cond: (uid = c.prodid)\\
-(11 rows)\\
+\begin{lstlisting}[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\tiny,
+           autogobble=true,
+           commentstyle=\color{gray}
+        ]
+ Nested Loop  (cost=117340.56..1455804.06 rows=60763 width=17)
+   Join Filter: ((prod.production_year)::double precision > date_part('year'::text, (per.death)::timestamp without time zone))
+   ->  Hash Join  (cost=117340.13..1368053.03 rows=182290 width=21)
+         Hash Cond: (c.perid = per.uid)
+   ->  Seq Scan on casting c  (cost=0.00..1029263.28 rows=21962672 width=8)
+         Filter: ((role = 'actor'::cast_role) OR (role = 'actress'::cast_role) OR (role = 'director'::cast_role))
+   ->  Hash  (cost=116700.22..116700.22 rows=51193 width=21)
+   ->  Seq Scan on person per  (cost=0.00..116700.22 rows=51193 width=21)
+         Filter: (death IS NOT NULL)
+   ->  Index Scan using production_uid_index on production prod  (cost=0.43..0.46 rows=1 width=8)
+         Index Cond: (uid = c.prodid)
+(11 rows)
 
-Time: 5.659 ms\\
+Time: 5.659 ms
+\end{lstlisting}
 
-Only one index is used by postgres in this query : production_uid_index. But several others indexes could used in the joins : casting_prodid_index,  casting_role_index,casting_perid_index. But postgres used sequencial scan on the join's conditions.\\
+Only one index is used by postgres in this query : $production\_uid\_index$. But several others indexes could used in the joins : $casting\_prodid_index$,  $casting\_role\_index$, $casting\_perid\_index$. But postgres used sequencial scan on the join's conditions.\\
 
-The index on the production.uid is used to efficiently join casting and production accoriding to his id. The other side of the join equality can't use both indexes, so a sequential scan of all entry in the table is made.\\
+The index on the production.uid is used to efficiently join casting and production according to his id. The other side of the join equality can't use both indexes, so a sequential scan of all entry in the table is made.\\
 
 The distribution of the cost is almost the same for the nested loop, the hash Join and the Hash. Of course the sequential scan has a variable cost from zero to the cost of the operation calling it (hash and hash join). Those costs are very high because of the complexity of a tow large table join.\\
+
+
 
 
 
