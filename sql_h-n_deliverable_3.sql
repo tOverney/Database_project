@@ -53,6 +53,22 @@ GROUP BY relA.production_year, relA.name, relA.nb_release
 HAVING count(relB.*)<= 3
 ORDER BY relA.production_year DESC, nb_release DESC ;
 
+-- k) with PARTITION
+
+SELECT DISTINCT production_year AS year, comp.name, num_movie, Rank
+FROM(
+    SELECT DISTINCT *, RANK() OVER (PARTITION BY production_year ORDER BY num_movie DESC) AS Rank
+    FROM (
+        SELECT part.cid, prod.production_year, COUNT(*) AS num_movie
+        FROM production AS prod
+        JOIN participate AS part ON prod.uid = part.pid
+        WHERE prod.production_year IS NOT NULL
+        GROUP BY part.cid, prod.production_year
+    ) AS MoviesPerCompanyInAYear
+) AS MoviesPerCompanyInAYearWithRank
+JOIN company AS comp ON comp.uid = cid
+WHERE Rank <= 3
+ORDER BY production_year, num_movie DESC;
 
 -- l) Give every person how have 'opera singer' in their biography or trivia (only places where it appears) order from the younger to the older : 7.277 secondes (ssh)
 
@@ -125,3 +141,28 @@ FROM( SELECT char.name, count(*) as nb_char FROM company as comp
 	ORDER BY nb_char DESC
 	LIMIT 1) as char2,
 company as comp1;
+
+
+
+
+
+
+
+
+
+SELECT  country_code, name, name_tot
+FROM(
+    SELECT DISTINCT *, RANK() OVER (PARTITION BY country_code ORDER BY name_tot DESC) AS rank
+    FROM (
+        SELECT DISTINCT comp.country_code, char.name, COUNT(*) AS name_tot
+       FROM company as comp
+	JOIN participate as part ON part.cid=comp.uid AND part.type= 'production company'
+	JOIN production as prod ON prod.uid = part.pid
+	JOIN casting AS cas ON prod.uid = cas.prodid
+	JOIN character AS char ON char.uid = cas.cid
+        WHERE comp.country_code IS NOT NULL
+        GROUP BY comp.country_code, char.name
+    ) AS NameWithNameCountPerCountry
+) AS NameWithNameCountPerCountryWithRank
+WHERE rank <= 1
+ORDER BY country_code ASC;
