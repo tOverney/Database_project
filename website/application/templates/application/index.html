@@ -21,7 +21,7 @@
             <a class="pure-menu-heading" href="#">Preset Queries</a>
 
             <ul class="pure-menu-list">
-                {% for i in range %}<li class="pure-menu-item">
+                {% for i in range %}<li class="pure-menu-item{height:auto}">
                     <a href="/application/{{ i }}/" class="pure-menu-link">{{ queries|index:i|index:0 }}</a>
                 </li>{% endfor %}
             </ul>
