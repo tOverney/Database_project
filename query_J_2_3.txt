@@ -28,8 +28,7 @@ Time: 5.659 ms\\
 
 Only one index is used by postgres in this query : production_uid_index. But several others indexes could used in the joins : casting_prodid_index,  casting_role_index,casting_perid_index. But postgres used sequencial scan on the join's conditions.\\
 
-The index on the production.uid is used to efficiently join casting and production accoriding to his id.
+The index on the production.uid is used to efficiently join casting and production accoriding to his id. The other side of the join equality can't use both indexes, so a sequential scan of all entry in the table is made.\\
 
-production_year_index is also not used 
+The distribution of the cost is almost the same for the nested loop, the hash Join and the Hash. Of course the sequential scan has a variable cost from zero to the cost of the operation calling it (hash and hash join). Those costs are very high because of the complexity of a tow large table join.\\
 
-Except for production_year_index in the WHERE clause
