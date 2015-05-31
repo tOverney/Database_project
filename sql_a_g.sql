@@ -270,4 +270,4 @@ SELECT AVG (numb)
 FROM 	(SELECT count(DISTINCT season) AS numb
 	FROM episode
 	GROUP BY sid
-	) AS count;			
+	) AS count;
