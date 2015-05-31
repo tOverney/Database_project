@@ -41,7 +41,75 @@ required_queries = [
     FROM casting
     WHERE role = 'actor'
     GROUP BY prodid) AS number;""",
-    ("Average # actors", "Max # actors", "Min # actors")]]
+    ("Average # actors", "Max # actors", "Min # actors")],
+
+    ["Min, max and average height of female persons",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Movies that had the same person as actor and director",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["The three most popular character names",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Actors age difference greater than 55 years",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Bradley Cooper's most productive year",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["2000 most prolific companies, per genre",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["People who worked with relatives on a production",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Average number of actors per production per year",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Average number of episodes per season",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Average number of seasons per tv show",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Top 10 tv shows in number of seasons",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Top 10 tv shows in number of episodes per season",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Persons having a movie released after their death",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Top 3 companies per year in number of movies released",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["All living opera singers, ordered by age",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Top 10 most ambiguous credits",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")],
+
+    ["Most frequent character name per country per prod comp",
+    """PLACEHOLDER""",
+    ("Year of production", "# of production that year")]]
 
 keywords = ["Person", "Production", "Character", "Company"]
 
