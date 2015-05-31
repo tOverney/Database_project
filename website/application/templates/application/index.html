@@ -47,7 +47,7 @@
                         <input type="radio" name="kw_choice" id="kw_choice{{ forloop.counter }}" value="{{ kw }}" />
                         <label for="kw_choice{{ forloop.counter }}">
                             {{ choice.choice_text }}</label><br />
-                    {{% endfor %}}
+                    {% endfor %}
                 <div class="pure-controls">
                     <input type="submit" class="pure-button pure-button-primary" value="Search"/>
                 </div>
