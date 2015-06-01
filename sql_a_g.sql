@@ -4,10 +4,7 @@ FROM person p1
 LEFT JOIN casting c1 ON p1.uid = c1.perid
 LEFT JOIN casting c2 ON c1.prodid = c2.prodid
 LEFT JOIN person p2 ON c2.perid = p2.uid
-WHERE (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year') 
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year' )
-OR (p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year');
+WHERE p1.birth IS NOT NULL AND p2.birth IS NOT NULL AND p1.uid <> p2.uid AND p1.birth >= p2.birth + 55 * interval '1 year';
 
 
 -- B ( ex: Bradley Cooper: 1951ms = 2sc / Marion Cotillard: 551ms   )
@@ -240,7 +237,7 @@ LEFT JOIN production p ON pa.pid = p.uid
 LEFT JOIN company c ON pa.cid = c.uid
 WHERE production_year = 2000 AND p.genre = 'Western'  
 GROUP BY name, genre
-ORDER BY nombre_de_prod DESC LIMIT 1)
+ORDER BY nombre_de_prod DESC LIMIT 1);
 
 -- D (1772692ms = 29.54 min)
 SELECT c1.prodid, p1.last_name, p1.first_name, p2.last_name, p2.first_name

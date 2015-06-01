@@ -57,7 +57,7 @@ SELECT per.first_name, per.last_name, p.title
 
 
 -- My version
-SELECT p2.uid, p1.uid, person.first_name, person.last_name, prod.title, p1.role, p2.role FROM casting p1
+SELECT person.first_name, person.last_name, prod.title FROM casting p1
     LEFT JOIN casting p2
         ON p1.prodid = p2.prodid AND p1.perid = p2.perid
     LEFT JOIN person
