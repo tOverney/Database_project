@@ -512,9 +512,11 @@ def search_result(request):
     (selected_table, keyword) = ("", "")
     try:
         selected_table = request.POST['kw_choice']
-        keyword = request.POST['keyword']
     except KeyError:
         selected_table = "Person"
+    try:
+        keyword = request.POST['keyword']
+    except KeyError:
         keyword = "No search keyword"
 
     filler = {'keyword': keyword}
