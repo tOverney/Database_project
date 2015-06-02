@@ -454,7 +454,7 @@ search_queries = {
     LIMIT 600;""",
     'Production': """SELECT * FROM Production
     WHERE title LIKE 'P_PH %(keyword)s P_PH'
-    OR kind = '%(keyword)s'
+    OR kind::text = '%(keyword)s'
     OR genre LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600""",
     'Character': """SELECT * FROM Character
