@@ -465,11 +465,18 @@ search_queries = {
     OR country_code LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;"""}
 
-keywords = ["Person", "Production", "Character", "Company"]
+searchable = ["Person", "Production", "Character", "Company"]
+tables = ["Person", "Production", "Character", "Company", "Alternative_Name",
+    "Alternative_Title", "Casting", "Tv_Series", "Episode", "Participate"]
+
+operation_prefix = {'select': """SELECT * FROM %s WHERE """,
+    'insert': """INSERT INTO %s VALUES """,
+    'delete': """DELETE FROM %s WHERE """}
 
 def index(request):
 
-    context = {'queries': required_queries, 'range': range(len(required_queries)), 'keywords': keywords}
+    context = {'queries': required_queries, 'tables': tables,
+        'range': range(len(required_queries)), 'searchable': searchable}
 
     return render(request, 'application/index.html', context)
 
@@ -570,3 +577,55 @@ def followup(request, selected, id):
         'query_result': result_array, 'col_title': columns}
 
     return render(request, 'application/result.html', context)
+
+def dispatcher(request):
+    (op_type, table, payload) = ("", "", "")
+    try:
+        table = request.POST['table']
+    except KeyError:
+        table = "Person"
+
+    try:
+        op_type = request.POST['type']
+    except KeyError:
+        op_type = "select"
+    operation = operation_prefix[op_type]
+
+    try:
+        payload = request.POST['parameter']
+    except KeyError:
+        payload = 'uid = -1'
+
+    query = (operation % table) + payload + ";"
+
+    # opening connection to the database
+    cur = connection.cursor()
+
+    # do the selection
+    status = "Query executed properly!"
+    (results, columns) = ("", "")
+    try:
+        cur.execute(query)
+        connection.commit()
+
+        results = cur.fetchall()
+        columns = [col[0] for col in cur.description]
+
+    except Error as e:
+        status = e.strerror
+    finally:
+        cur.close()
+        connection.close()
+
+    if "select" = op_type:
+        context = {'queries': required_queries,
+            'query_name': query,
+            'query_result': results, 'col_title': columns}
+
+        return render(request, 'application/result.html', context)
+
+    else:
+        context = {'queries': required_queries,
+            'query_name': query,
+            'status': status}
+        return render(required, 'application/status.html', context)

@@ -251,7 +251,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     margin-right: auto;
 }
 
-#no_margin {
-    margin-left: 0px;
+.page_section {
+    border-bottom: 1px solid #EEE;
 }
 

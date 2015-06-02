@@ -35,6 +35,7 @@
         </div>
     </div>
     <div class="content">
+        <div class="page_section">
         <form action="/application/search_res/" method="post" class="pure-form pure-form-aligned">
             <fieldset>
                 <div class="pure-control-group">
@@ -44,7 +45,7 @@
                 </div>
                 <div class="pure-controls" required>
                     {% csrf_token %}
-                    {% for kw in keywords %}
+                    {% for kw in searchable %}
                         <input type="radio" name="kw_choice" id="kw_choice{{ forloop.counter }}" value="{{ kw }}" />
                         <label for="kw_choice{{ forloop.counter }}">
                             {{ kw }}</label><br />
@@ -54,6 +55,35 @@
                 </div>
             </fieldset>
         </form>
+        <div>
+        <div>
+        <h1>SQL "Sandbox"</h1>
+        <form action="/application/dispatcher/" method="post" class="pure-form pure-form-aligned">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="type">Request Type</label>
+                    <select id="type" name="type">
+                        <option value="select">Selection</option>
+                        <option value="insert">Insertion</option>
+                        <option value="delete">Deletion</option>
+                    </select>
+                </div>
+                <div class="pure-control-group">
+                    <label for="table">Table</label>
+                    <select id="table" name="table">
+                    {% for table in tables %}
+                        <option value="{{ table }}">{{ table }}</option>
+                    {% endfor %}
+                <div class="pure-control-group">
+                    <textarea class="pure-input-1-2" name="parameter"
+                        placeholder="tuple of values to insert or condition for select/delete"></textarea>
+                </div>
+                <div class="pure-controls">
+                    <input type="submit" class="pure-button pure-button-primary" value="Run SQL"/>
+                </div>
+            </fieldset>
+        </form>
+        </div>
     </div>
 </div>
 
