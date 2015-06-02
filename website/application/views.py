@@ -544,3 +544,27 @@ def search_result(request):
         'col_title': columns}
     
     return render(request, 'application/search_result.html', context)
+
+def followup(request, selected, id):
+    # opening connection to the database
+    cur = connection.cursor()
+
+    # do the selection
+
+    cur.execute("""SELECT * FROM %s WHERE uid = %s""" % (selected, id))
+    connection.commit()
+
+
+    # fetch the result
+    result_array = cur.fetchall()
+    columns = [col[0] for col in cur.description]
+
+    # we close everything db related
+    cur.close()
+    connection.close()
+
+    context = {'queries': required_queries,
+        'query_name': ("Follow up on id %s" % id),
+        'query_result': result_array, 'col_title': current[2]}
+
+    return render(request, 'application/result.html', context)
