@@ -443,19 +443,33 @@ WHERE rank <= 1
 ORDER BY country_code ASC;""",
     ("Country code", "Character name", "# of occurences")]]
 
+search_queries = {
+    'Person': """SELECT * FROM Person
+    WHERE last_name = %(keyword)s OR first_name = %(keyword)s
+    LIMIT 200;""",
+    'Production': """SELECT * FROM Production
+    WHERE title = %(keyword)s""",
+    'Character': """SELECT * FROM Character
+    WHERE name = %(keyword)s
+    LIMIT 200;""",
+    'Company': """SELECT * FROM Company
+    WHERE name = %(keyword)s
+    LIMIT 200;"""}
+}
+
 keywords = ["Person", "Production", "Character", "Company"]
 
-def index(request) :
+def index(request):
 
-    context = {'queries' : required_queries, 'range' : range(len(required_queries)), 'keywords' : keywords}
+    context = {'queries': required_queries, 'range': range(len(required_queries)), 'keywords': keywords}
 
     return render(request, 'application/index.html', context)
 
 
 
-def result(request, query_index) :
+def result(request, query_index):
     query_index = int(query_index)
-    if query_index >= len(required_queries) :
+    if query_index >= len(required_queries):
         raise Http404("Question does not exist")
 
     current = required_queries[query_index]
@@ -479,8 +493,46 @@ def result(request, query_index) :
         raise Http404("Empty result..")
 
     # [["Bidon", "Bbb"],["Citron", "ccc"]]
-    context = {'queries' : required_queries, 'query_name' : current[0],
-        'query_result' : result_array,
-        'col_title' : current[2]}
+    context = {'queries': required_queries, 'query_name': current[0],
+        'query_result': result_array,
+        'col_title': current[2]}
     
     return render(request, 'application/result.html', context)
+
+def search_result(request):
+
+    selected_table = "Person"
+    keyword = "No search keyword"
+    try:
+        selected_table = request.POST['kw_choice']
+        keyword = request.POST['keyword']
+
+    filler = {'keyword': keyword}
+    current = (search_queries[selected_table] % filler)
+
+    # opening connection to the database
+    cur = connection.cursor()
+
+    # do the selection
+
+    cur.execute(current)
+    connection.commit()
+
+
+    # fetch the result 
+    result_array = cur.fetchall()
+    columns = [col[0] for col in cur.description]
+
+    # we close everything db related
+    cur.close()
+    connection.close()
+
+    if len(result_array) == 0:
+        raise Http404("Empty result..")
+
+    # [["Bidon", "Bbb"],["Citron", "ccc"]]
+    context = {'queries': required_queries, 'selected': selected_table,
+        'query_result': result_array,
+        'col_title': columns}
+    
+    return render(request, 'application/search_result.html', context)
