@@ -479,7 +479,7 @@ def result(request, query_index) :
         raise Http404("Empty result..")
 
     # [["Bidon", "Bbb"],["Citron", "ccc"]]
-    context = {'query_name' : current[0],
+    context = {'queries' : required_queries, 'query_name' : current[0],
         'query_result' : result_array,
         'col_title' : current[2]}
     
