@@ -46,7 +46,7 @@
             </thead>
             <tbody>
                 {% for line in query_result %}
-                <tr onclick="document.location = 'application/followup/{{ selected }}/{{ line.0 }}';">
+                <tr onclick="document.location = '../followup/{{ selected }}/{{ line.0 }}';">
                     {% for elem in line %}
                         <td>{{ elem }}</td>
                     {% endfor %}
