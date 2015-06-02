@@ -445,16 +445,16 @@ ORDER BY country_code ASC;""",
 
 search_queries = {
     'Person': """SELECT * FROM Person
-    WHERE last_name LIKE '\% %(keyword)s \%' OR first_name LIKE '\% %(keyword)s \%'
+    WHERE last_name LIKE 'P_PH %(keyword)s P_PH' OR first_name LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;""",
     'Production': """SELECT * FROM Production
-    WHERE title LIKE '\% %(keyword)s \%'
+    WHERE title LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600""",
     'Character': """SELECT * FROM Character
-    WHERE name LIKE '\% %(keyword)s \%'
+    WHERE name LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;""",
     'Company': """SELECT * FROM Company
-    WHERE name LIKE '\% %(keyword)s \%'
+    WHERE name LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;"""}
 
 keywords = ["Person", "Production", "Character", "Company"]
@@ -511,6 +511,7 @@ def search_result(request):
 
     filler = {'keyword': keyword}
     current = (search_queries[selected_table] % filler)
+    current = current.replace("P_PH", '%')
 
     # opening connection to the database
     cur = connection.cursor()
