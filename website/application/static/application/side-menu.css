@@ -247,7 +247,11 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 }
 
 #centered {
-    margin-left:auto; 
-    margin-right:auto;
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+#no_margin {
+    margin-left: 0px;
 }
 

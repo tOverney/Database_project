@@ -445,17 +445,17 @@ ORDER BY country_code ASC;""",
 
 search_queries = {
     'Person': """SELECT * FROM Person
-    WHERE last_name = %(keyword)s OR first_name = %(keyword)s
-    LIMIT 200;""",
+    WHERE last_name LIKE '% %(keyword)s %' OR first_name LIKE '% %(keyword)s %'
+    LIMIT 600;""",
     'Production': """SELECT * FROM Production
-    WHERE title = %(keyword)s""",
+    WHERE title LIKE '% %(keyword)s %'
+    LIMIT 600""",
     'Character': """SELECT * FROM Character
-    WHERE name = %(keyword)s
-    LIMIT 200;""",
+    WHERE name LIKE '% %(keyword)s %'
+    LIMIT 600;""",
     'Company': """SELECT * FROM Company
-    WHERE name = %(keyword)s
-    LIMIT 200;"""}
-}
+    WHERE name LIKE '% %(keyword)s %'
+    LIMIT 600;"""}
 
 keywords = ["Person", "Production", "Character", "Company"]
 
@@ -506,6 +506,8 @@ def search_result(request):
     try:
         selected_table = request.POST['kw_choice']
         keyword = request.POST['keyword']
+    except KeyError:
+        raise Http404("ya dun goofed") 
 
     filler = {'keyword': keyword}
     current = (search_queries[selected_table] % filler)
@@ -531,8 +533,8 @@ def search_result(request):
         raise Http404("Empty result..")
 
     # [["Bidon", "Bbb"],["Citron", "ccc"]]
-    context = {'queries': required_queries, 'selected': selected_table,
-        'query_result': result_array,
+    context = {'queries': required_queries, 'keyword': keyword,
+        'selected': selected_table, 'query_result': result_array,
         'col_title': columns}
     
     return render(request, 'application/search_result.html', context)
