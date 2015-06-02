@@ -334,7 +334,7 @@ FROM (  SELECT COUNT(*) AS num
     FROM episode
     GROUP BY sid, season
     ) AS nb_episode;""",
-    ("Average number of episodes")],
+    ("Average number of episodes",)],
 
     ["Average number of seasons per tv show",
     """SELECT AVG (numb) 
@@ -342,7 +342,7 @@ FROM    (SELECT count(DISTINCT season) AS numb
     FROM episode
     GROUP BY sid
     ) AS count;""",
-    ("Average number of seasons")],
+    ("Average number of seasons",)],
 
     ["Top 10 tv shows in number of seasons",
     """SELECT p.title, COUNT( DISTINCT e.season ) AS nb_seasons
