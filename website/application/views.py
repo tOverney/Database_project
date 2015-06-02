@@ -509,13 +509,13 @@ def result(request, query_index):
 
 def search_result(request):
 
-    selected_table = "Person"
-    keyword = "No search keyword"
+    (selected_table, keyword) = ("", "")
     try:
         selected_table = request.POST['kw_choice']
         keyword = request.POST['keyword']
     except KeyError:
-        raise Http404("ya dun goofed") 
+        selected_table = "Person"
+        keyword = "No search keyword"
 
     filler = {'keyword': keyword}
     current = (search_queries[selected_table] % filler)
