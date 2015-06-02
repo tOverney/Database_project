@@ -445,16 +445,24 @@ ORDER BY country_code ASC;""",
 
 search_queries = {
     'Person': """SELECT * FROM Person
-    WHERE last_name LIKE 'P_PH %(keyword)s P_PH' OR first_name LIKE 'P_PH %(keyword)s P_PH'
+    WHERE last_name LIKE 'P_PH %(keyword)s P_PH'
+    OR first_name LIKE 'P_PH %(keyword)s P_PH'
+    OR trivia LIKE 'P_PH %(keyword)s P_PH'
+    OR quotes LIKE 'P_PH %(keyword)s P_PH'
+    OR biography LIKE 'P_PH %(keyword)s P_PH'
+    OR spouse LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;""",
     'Production': """SELECT * FROM Production
     WHERE title LIKE 'P_PH %(keyword)s P_PH'
+    OR kind LIKE 'P_PH %(keyword)s P_PH'
+    OR genre LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600""",
     'Character': """SELECT * FROM Character
     WHERE name LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;""",
     'Company': """SELECT * FROM Company
     WHERE name LIKE 'P_PH %(keyword)s P_PH'
+    OR country_code LIKE 'P_PH %(keyword)s P_PH'
     LIMIT 600;"""}
 
 keywords = ["Person", "Production", "Character", "Company"]
@@ -529,9 +537,6 @@ def search_result(request):
     # we close everything db related
     cur.close()
     connection.close()
-
-    if len(result_array) == 0:
-        raise Http404("Empty result..")
 
     # [["Bidon", "Bbb"],["Citron", "ccc"]]
     context = {'queries': required_queries, 'keyword': keyword,
