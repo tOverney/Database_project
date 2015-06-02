@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 
-from django.db import connection
+from django.db import connection, Error
 
 # Create your views here.
 required_queries = [
@@ -578,7 +578,7 @@ def followup(request, selected, id):
 
     return render(request, 'application/result.html', context)
 
-def dispatcher(request):
+def dispatching_page(request):
     (op_type, table, payload) = ("", "", "")
     try:
         table = request.POST['table']
@@ -608,16 +608,17 @@ def dispatcher(request):
         cur.execute(query)
         connection.commit()
 
-        results = cur.fetchall()
-        columns = [col[0] for col in cur.description]
+        if "select" == op_type:
+            results = cur.fetchall()
+            columns = [col[0] for col in cur.description]
 
     except Error as e:
-        status = e.strerror
+       status = "Error ! " + str(e)
     finally:
         cur.close()
         connection.close()
 
-    if "select" = op_type:
+    if "select" == op_type and "Error" not in status:
         context = {'queries': required_queries,
             'query_name': query,
             'query_result': results, 'col_title': columns}
@@ -628,4 +629,4 @@ def dispatcher(request):
         context = {'queries': required_queries,
             'query_name': query,
             'status': status}
-        return render(required, 'application/status.html', context)
+        return render(request, 'application/status.html', context)

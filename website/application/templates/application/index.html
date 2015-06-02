@@ -58,7 +58,7 @@
         <div>
         <div>
         <h1>SQL "Sandbox"</h1>
-        <form action="/application/dispatcher/" method="post" class="pure-form pure-form-aligned">
+        <form action="/application/dispatching_page/" method="post" class="pure-form pure-form-aligned">
             <fieldset>
                 <div class="pure-control-group">
                     <label for="type">Request Type</label>
@@ -74,11 +74,12 @@
                     {% for table in tables %}
                         <option value="{{ table }}">{{ table }}</option>
                     {% endfor %}
-                <div class="pure-control-group">
+                <div class="pure-controls">
                     <textarea class="pure-input-1-2" name="parameter"
                         placeholder="tuple of values to insert or condition for select/delete"></textarea>
                 </div>
                 <div class="pure-controls">
+                    {% csrf_token %}
                     <input type="submit" class="pure-button pure-button-primary" value="Run SQL"/>
                 </div>
             </fieldset>
