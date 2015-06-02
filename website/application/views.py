@@ -565,6 +565,6 @@ def followup(request, selected, id):
 
     context = {'queries': required_queries,
         'query_name': ("Follow up on id %s" % id),
-        'query_result': result_array, 'col_title': current[2]}
+        'query_result': result_array, 'col_title': columns}
 
     return render(request, 'application/result.html', context)
