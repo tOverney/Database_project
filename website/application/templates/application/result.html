@@ -21,8 +21,8 @@
             <a class="pure-menu-heading" href="/application/">Back to main page</a>
 
             <ul class="pure-menu-list">
-                {% for i in range %}<li class="pure-menu-item{height:auto}">
-                    <a href="/application/{{ i }}/" class="pure-menu-link">{{ queries|index:i|index:0 }}</a>
+                {% for elem in queries %}<li class="pure-menu-item{height:auto}">
+                    <a href="/application/{{ forloop.counter0 }}/" class="pure-menu-link">{{ elem|index:0 }}</a>
                 </li>{% endfor %}
             </ul>
         </div>
