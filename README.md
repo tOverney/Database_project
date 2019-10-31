@@ -8,4 +8,3 @@ This a relatively small database project (5 GB dataset) for which I had to:
   * design a webapp to have a nice interface.
 
 This was done using python and the django framework.
-The webapp is currently online at [the following address](http://overney.me/application/)
